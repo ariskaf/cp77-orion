@@ -1,0 +1,905 @@
+<!-- THIS SITE WAS CREATED BY ME WITH LOTS OF HARD WORK -->
+<!-- PLEASE DO NOT REMOVE THIS COMMENT -->
+ <!-- ********************************************* -->
+
+
+<!doctype html>
+<html lang="en">
+<head>
+
+  <!-- Meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="language" content="en-EN">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="author" content="Aris Kafalis">
+  <meta name="keywords" content="HTML, CSS, JS, JQUERY, JAVASCRIPT">
+  <meta name="description" content="cp77,cp2077,cyberpunk,2077,cyberpunk2077,cyberpunk 2077,game,steam,story,rpg,firstperson,first,person,fanpage,fan,page">
+  
+  <!-- Title -->
+  <title>Cyberpunk 2077 — Phantom Liberty & Project Orion — Fan Hub</title>
+
+  <!-- Link Tags -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.5/css/lightbox.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <!--<link rel="stylesheet" type="text/css" href="map.css" />-->
+
+  <!-- Script tags -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.5/js/lightbox-plus-jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+</head>
+<body oncontextmenu="return false;">
+
+
+  <!-- Global boot overlay -->
+<div class="boot-overlay" id="boot-overlay">
+  <div class="boot-sigil-wrap">
+    <!-- make the image small and centered with glowing animation -->
+    <img class="boot-sigil"
+      src="media/uti/nci.png">  <!-- change path to your PNG -->
+    
+
+    <div class="boot-text-block">
+      <div class="boot-fixed-line">NIGHT CORP // ORION PASSIVE NODE</div>
+      <div class="boot-random" id="boot-random-text"></div>
+    </div>
+
+    <!-- Remove the press to skip-->
+    <div class="boot-hint">press any key or click to bypass NCI trace</div>
+    <div class="boot-low-power" id="boot-low-power">
+  LOW POWER MODE // ORION THROTTLED
+</div>
+
+  </div>
+</div>
+
+
+<!-- Global neural interference overlay -->
+  <div class="neural-noise-overlay"></div>
+
+    <!-- Main Content Goes Here! -->
+
+  <header>
+    <div class="logo">CP2077 • PHANTOM / ORION</div>
+    <nav class="nav">
+      <button class="btn" id="btn-videos">Videos</button>
+      <button class="btn" id="btn-char">Characters</button>
+      <button class="btn" id="btn-about">About Us</button>
+      <button class="btn" id="btn-support">Support</button>
+      <button class="btn" id="btn-log">Login</button>
+    </nav>
+  </header>
+
+  <!-- SECURITY BREACH BANNER -->
+  <div class="security-breach" aria-live="polite">
+    <div class="security-breach-inner">
+      <span class="breach-label">SECURITY BREACH DETECTED</span>
+      <span class="breach-sub">ORION NODE // UNAUTHORIZED TERMINAL ACCESS</span>
+      <span class="breach-code">EVENT ID: NC-DT-2077</span>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+  <!-- MAIN OPS NODE -->
+  <div class="card hero-main">
+    <div class="hero-top">
+      <div>
+        <h1 class="title boot-text">PHANTOM LIBERTY // DOGTOWN OPS NODE</h1>
+        <p class="subtitle hero-subtitle">
+          NUSA uplink for live intel, operation status and ORION development chatter
+          inside the Dogtown exclusion zone.
+        </p>
+      </div>
+      <div class="hero-pill">
+        <span class="hero-dot"></span>
+        <span class="hero-pill-text">THEATER: ACTIVE</span>
+      </div>
+    </div>
+
+    <div class="hero-metrics">
+      <div class="hero-metric">
+        <span class="hero-metric-label">OPERATION</span>
+        <div class="hero-metric-main">PHANTOM LIBERTY</div>
+        <div class="hero-metric-sub">
+          Dogtown black ops deployment · Sep 25, 2023 · Platform: PC / PS5 / XSX
+        </div>
+      </div>
+
+      <div class="hero-metric">
+        <span class="hero-metric-label">ASSETS IN FIELD</span>
+        <div class="hero-metric-main">V · SONGBIRD · SOLOMON REED</div>
+        <div class="hero-metric-sub">
+          Status envelope: <span class="dossier-tag danger">HIGH RISK</span> ·
+          NUSA oversight <span class="dossier-redacted">██████</span>
+        </div>
+      </div>
+
+      <div class="hero-metric">
+        <span class="hero-metric-label">PROJECT ORION</span>
+        <div class="hero-metric-main">PRE-PRODUCTION</div>
+        <div class="hero-metric-sub">
+          Internal codename for the next Cyberpunk title. Telemetry hooks routed
+          through ORION uplink.
+        </div>
+      </div>
+    </div>
+
+    <h2 class="hero-news-heading">ORION News Stream</h2>
+    <div id="news" class="news-list card" aria-live="polite"></div>
+  </div>
+
+  <!-- Gallery Modal (unchanged) -->
+  <div class="modal" id="galleryModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeGallery">×</button>
+      <div class="gallery-container"></div>
+    </div>
+  </div>
+
+  <!-- SIDE PANEL: FIELD IMAGERY + BODY COUNT -->
+  <aside class="card side-panel">
+    <div class="side-header">
+      <h2>Field Imagery Archive</h2>
+      <span class="side-tag">VISUAL EVIDENCE</span>
+    </div>
+    <p class="subtitle side-subtitle">
+      Curated frames from Night City operators and Dogtown surveillance cams.
+      Tap to expand or open the full archive.
+    </p>
+
+    <div class="gallery" id="gallery">
+      <img class="thumb" src="media/images/somi.png" alt="Songbird intel frame" data-full="media/images/somi.png">
+      <img class="thumb" src="media/images/rogue.jpeg" alt="Rogue at Afterlife" data-full="media/images/rogue.jpeg">
+      <img class="thumb" src="media/images/vnpl.png" alt="V &amp; Phantom Liberty key art" data-full="media/images/vnpl.png">
+      <img class="thumb" src="media/images/cp77.jpg" alt="Night City skyline overview" data-full="media/images/cp77.jpg">
+      <div class="thumb thumb-button" id="view-gallery">Archive →</div>
+    </div>
+
+    <hr style="margin:12px 0;border-color:rgba(255,255,255,0.02)">
+    <div>
+      <strong>Body count</strong>
+      <!--<div style="display:flex;gap:8px;margin-top:8px;align-items:center"><div id="body-count" style="font-size:20px;font-weight:700">0</div><button class="btn" id="kill-btn">+1</button></div>
+      <small class="subtitle">Local-only counter — stored in your browser.</small>
+    </div>-->
+      <div id="body-counter" style="margin-top:8px">
+        <span id="counter-number" style="font-size:20px;font-weight:700;color:var(--neon)">000000</span>
+        <span id="counter-alert"></span><br>
+        <small>Counter increase/decrease based on <span style="color:var(--neon);">Trauma Team <i class="fa-solid fa-star-of-life"></i></span></small>
+      </div>
+    </div>
+  </aside>
+</section>
+
+
+    <section class="card" style="margin:18px">
+  <h2>ORION Signal Feed // Intercepted Transmissions</h2>
+  <p class="subtitle" style="margin-bottom:10px;">
+    Unverified NUSA &amp; corporate broadcasts related to Phantom Liberty and Project ORION.
+    Content flagged as <span style="color:var(--neon);">POTENTIAL LEAK</span>. Handle with care.
+  </p>
+
+  <div class="intel-feed">
+    <!-- ITEM 1 -->
+    <article class="intel-item">
+      <div class="intel-header">
+        <span class="intel-tag">NUSA BROADCAST</span>
+        <span class="intel-code">SRC: MYERS-BC-01</span>
+      </div>
+      <div class="intel-image-wrap">
+        <img src="media/leak/nusa.jpg" alt="NUSA Presidential broadcast">
+        <span class="intel-status-dot"></span>
+      </div>
+      <div class="intel-body">
+        <p class="intel-title">Presidential Address to N.U.S.A. Citizens</p>
+        <p class="intel-text">
+          Encrypted message from President Rosalind Myers regarding Dogtown
+          operations and high-risk assets in Night City. Full transcript
+          remains <span class="dossier-redacted">██████████</span>.
+        </p>
+      </div>
+    </article>
+
+    <!-- ITEM 2 -->
+    <article class="intel-item">
+      <div class="intel-header">
+        <span class="intel-tag warning">PROJECT ORION</span>
+        <span class="intel-code">REF: ORION-INIT-02</span>
+      </div>
+      <div class="intel-image-wrap">
+        <img src="media/leak/orion.jpg" alt="Cyberpunk Orion concept">
+        <span class="intel-status-dot"></span>
+      </div>
+      <div class="intel-body">
+        <p class="intel-title">CDPR Internal Codename Brief</p>
+        <p class="intel-text">
+          Early documentation confirming ORION as the next Cyberpunk title.
+          Focus: expanding the dark future universe beyond Night City.
+          Several attached assets were removed as <span class="dossier-redacted">CLASSIFIED</span>.
+        </p>
+      </div>
+    </article>
+
+    <!-- ITEM 3 -->
+    <article class="intel-item">
+      <div class="intel-header">
+        <span class="intel-tag stable">INSURANCE UPDATE</span>
+        <span class="intel-code">TRAUMA TEAM</span>
+      </div>
+      <div class="intel-image-wrap">
+        <img src="media/uti/trauma_team.jpg" alt="Cyberpunk Patch 2.31">
+        <span class="intel-status-dot"></span>
+      </div>
+      <div class="intel-body">
+        <p class="intel-title">Trauma Team Emergency Insurance Upgrade</p>
+        <p class="intel-text">
+          Leaked corporate memo outlines a new reinforcement package for 
+  Trauma Team elite med-ops.  
+  Includes armored insertion, biometric auto-authorization, and 
+  high-threat client retrieval inside Dogtown AO.  
+  Rumors point to classified revival tech sourced from 
+  <span class="dossier-redacted">ARASAKA RELIC RESEARCH</span>.
+        </p>
+      </div>
+    </article>
+  </div>
+</section>
+
+
+    <!-- 🔴 REPLACED CHARACTER BIOS WITH NUSA INTELLIGENCE DOSSIERS -->
+    <section class="card" style="margin:18px">
+      <h2>NUSA Intelligence Dossiers</h2>
+      <p class="subtitle dossier-header">
+        ACCESS LEVEL: <span class="dossier-tag">CLASSIFIED // PARTIAL DECLASSIFICATION</span><br>
+        Unauthorized access punishable under NUSA Federal Statute 77-PL.
+      </p>
+
+      <div class="dossier">
+        <div class="dossier-title-row">
+          <h3 class="dossier-name">V</h3>
+          <span class="dossier-code">FILE: NC-77-VALKYRIE</span>
+        </div>
+        <p class="dossier-meta">
+          STATUS: <span class="dossier-tag">MERCENARY</span> · THREAT LEVEL:
+          <span class="dossier-tag danger">DELTA</span>
+        </p>
+        <p class="subtitle">
+          Subject displays extreme adaptability to Relic-induced neural anomalies.
+          Multiple timelines indicate high survivability in high-risk ops inside Dogtown.
+          Psychological profile: unstable but effective. Further details 
+          <span class="dossier-redacted">██████████████</span>.
+        </p>
+      </div>
+
+      <div class="dossier">
+        <div class="dossier-title-row">
+          <h3 class="dossier-name">Songbird</h3>
+          <span class="dossier-code">FILE: NUSA-INT-SB-11</span>
+        </div>
+        <p class="dossier-meta">
+          STATUS: <span class="dossier-tag">BLACK OPS</span> · PRIORITY:
+          <span class="dossier-tag warning">ALPHA</span>
+        </p>
+        <p class="subtitle">
+          High-value NUSA netrunner asset embedded in Dogtown theatre.
+          Neural degradation at critical threshold; Relic compatibility confirmed.
+          Operation dependency on subject remains <span class="dossier-redacted">███</span>%. 
+          All intel routed through secured ORION uplink.
+        </p>
+      </div>
+
+      <div class="dossier">
+        <div class="dossier-title-row">
+          <h3 class="dossier-name">Solomon Reed</h3>
+          <span class="dossier-code">FILE: FIA-PL-REED-09</span>
+        </div>
+        <p class="dossier-meta">
+          STATUS: <span class="dossier-tag">FIA DEEP COVER</span> · RELIABILITY:
+          <span class="dossier-tag stable">STEADY</span>
+        </p>
+        <p class="subtitle">
+          Veteran field agent with long-term embedded presence in Night City.
+          Displays strong duty fixation and controlled emotional response.
+          Unconfirmed link between Reed and ORION pre-initiation phase — 
+          investigation tagged <span class="dossier-redacted">PENDING REVIEW</span>.
+        </p>
+      </div>
+    </section>
+
+    <section class="card recon-card" style="margin:18px">
+  <div class="recon-header">
+    <div>
+      <h2>RECON SATELLITE FEED // DOGTOWN SECTOR</h2>
+      <p class="subtitle">
+        Live uplink from NUSA recon asset <span class="dossier-tag stable">SAT-Δ77</span>. 
+        Tactical overlay for Phantom Liberty operations in Dogtown.
+      </p>
+    </div>
+    <div class="recon-meta">
+      <span class="recon-tag">MODE: ORBITAL</span>
+      <span class="recon-tag">RES: HI-SCAN</span>
+    </div>
+  </div>
+
+  <div class="recon-map-wrap" id="recon-map-wrap">
+    <div class="recon-scanlines"></div>
+
+    <!-- HEAT SIGNATURE OVERLAY -->
+    <div class="vsth-heat"></div>
+
+    <!-- V.S.T.H. HUD LAYERS -->
+
+    <!-- Hotspots (static positions, pulsing) -->
+    <div class="vsth-hotspot hs1"></div>
+    <div class="vsth-hotspot hs2"></div>
+    <div class="vsth-hotspot hs3"></div>
+
+    <!-- Moving enemy blips -->
+    <div class="vsth-enemy e1"></div>
+    <div class="vsth-enemy e2"></div>
+
+    <!-- Rotating scan arc -->
+    <div class="vsth-scan-arc"></div>
+
+    <!-- Blinking radar blips -->
+    <div class="vsth-blip blip1"></div>
+    <div class="vsth-blip blip2"></div>
+
+    <!-- SIGINT text overlays -->
+    <div class="vsth-sigint sig1">SIGINT: B3 NODE</div>
+    <div class="vsth-sigint sig2">SIGINT: DOG-ALPHA</div>
+
+    <!-- Coordinate readouts -->
+    <div class="vsth-coords">
+      <pre>
+[COORD] 38.9971N / 77.0302W   SECTOR: B3
+[COORD] 38.9964N / 77.0329W   SECTOR: C1
+[COORD] 38.9980N / 77.0288W   SECTOR: D2
+[TRACK] DOGTOWN PATTERNS.....UPLINK ACTIVE
+      </pre>
+    </div>
+
+    <!-- Sector alerts -->
+    <div class="vsth-sector-alert alert1">
+      SECTOR B3 // CONTACT
+    </div>
+    <div class="vsth-sector-alert alert2">
+      SECTOR F2 // NOISE SPIKE
+    </div>
+
+    <!-- Lock-on reticle (set by JS) -->
+    <div class="vsth-lock"></div>
+
+    <!-- Base map & existing frame elements -->
+    <img src="media/icons/map.png" alt="Dogtown tactical map" class="recon-map">
+    <div class="recon-corner tl"></div>
+    <div class="recon-corner tr"></div>
+    <div class="recon-corner bl"></div>
+    <div class="recon-corner br"></div>
+    <div class="recon-target"></div>
+  </div>
+
+  <!-- Waveform analyzer under map -->
+  <div class="recon-waveform">
+    <div class="wf-bar b1"></div>
+    <div class="wf-bar b2"></div>
+    <div class="wf-bar b3"></div>
+    <div class="wf-bar b4"></div>
+    <div class="wf-bar b5"></div>
+    <div class="wf-bar b6"></div>
+    <div class="wf-bar b7"></div>
+    <div class="wf-bar b8"></div>
+  </div>
+
+  <div class="recon-footer">
+    <span class="recon-status">
+      STATUS: <span class="recon-status-live">LINK STABLE // PRESS "N" FOR NIGHT VISION MODE</span>
+    </span>
+    <span class="recon-footnote">
+      Interactive sector selection coming soon. Current feed: static orbital pass over Dogtown AO. Click map to lock target.
+    </span>
+  </div>
+</section>
+
+
+
+    <section class="card" style="margin:18px">
+      <h2>Relic Biochip // Project ORION</h2>
+      <div class="biochip-wrapper">
+        <img 
+          src="media/uti/relic_info.jpg" 
+          alt="Relic biochip schematic" 
+          class="biochip-image"
+        >
+        <p class="subtitle">
+          Experimental Relic architecture recovered from Arasaka R&amp;D archives. 
+          Neural lattice, organic circuitry and encrypted data channels visualized in 
+          high-contrast scanlines. Further analysis classified <span style="color:var(--neon);">TOP SECRET</span>.
+        </p>
+
+        <button 
+          class="btn relic-btn" 
+          onclick="window.open('relic.html', '_blank', 'noopener');"
+          style="margin-top:12px"
+        >
+          Open Relic Lab &rsaquo;
+        </button>
+      </div>
+    </section>
+
+
+
+<!-- ARASAKA DATA TERMINALS -->
+<section class="card" style="margin:18px">
+  <h2>Arasaka Data Terminals</h2>
+  <p class="subtitle">
+    Internal monitoring nodes mirrored from Arasaka infrastructure.
+    All feeds are simulated, do <span style="color:var(--neon);">not</span> treat as real market or network data.
+  </p>
+
+  <div class="terminal-link-grid">
+    <button class="terminal-link-card" type="button" data-terminal="market">
+      <span class="terminal-link-label">MARKET DATA</span>
+      <span class="terminal-link-sub">Eurodollar volatility monitor</span>
+    </button>
+
+    <button class="terminal-link-card" type="button" data-terminal="netwatch">
+      <span class="terminal-link-label">NETWATCH SERVER</span>
+      <span class="terminal-link-sub">Deep packet / intrusion log</span>
+    </button>
+
+    <button class="terminal-link-card" type="button" data-terminal="traffic">
+      <span class="terminal-link-label">TRAFFIC NETWORK</span>
+      <span class="terminal-link-sub">Night City grid routing status</span>
+    </button>
+  </div>
+</section>
+
+
+
+
+    <section class="card leak-filter" style="margin:18px">
+  <div class="leak-header">
+    <h2>LEAK-FILTER NODE // CONTENT SCRUBBING ACTIVE</h2>
+    <span class="leak-status-pulse"></span>
+  </div>
+
+  <p class="subtitle leak-desc">
+    Automated ORION leak-filter is actively sanitizing inbound transmissions.
+    Certain data streams have been flagged as 
+    <span class="dossier-tag danger">UNAUTHORIZED</span> and partially removed.
+  </p>
+
+  <div class="leak-panel">
+    <p class="leak-line">[SCAN] parsing assets... <span class="glitch">OK</span></p>
+    <p class="leak-line">[CHECK] copyright integrity... <span class="glitch">OK</span></p>
+    <p class="leak-line">[FILTER] removing restricted material... 
+      <span class="dossier-redacted">██████████████████</span>
+    </p>
+    <p class="leak-line">[NOTICE] This fan node uses publicly available community content only.</p>
+  </div>
+
+  <p class="subtitle leak-footer">
+    For official Project ORION updates, refer to CD PROJEKT RED communication channels.
+  </p>
+</section>
+
+
+  </main>
+
+  <div class="modal" id="modal"><img src="" alt="expanded"></div>
+
+  <footer class="card">
+    <small>Made with ❤️ — 2025. All rights reserved. <a href="dmca.html">DMCA</a> - <a href="terms.html">Terms of Use</a></small>
+  </footer>
+
+
+  <!-- HACKER CONSOLE OVERLAY -->
+  <div id="hacker-console" class="hacker-console" aria-hidden="true">
+    <div class="hc-inner">
+      <div class="hc-header">
+        <span class="hc-title">ORION // INTERNAL DIAGNOSTIC CONSOLE</span>
+        <span class="hc-hint">press <b>ESC</b> to exit</span>
+      </div>
+      <div class="hc-body">
+        <pre id="hc-log" class="hc-log">
+[BOOT] ORION Uplink v0.7.2
+[CHK]  NUSA node handshake..........................OK
+[CHK]  Dogtown relay integrity......................OK
+[WARN] Relic activity detected in neural lattice...
+[INFO] Press ~ to toggle console visibility.
+        </pre>
+      </div>
+      <div class="hc-footer">
+        <span class="hc-prompt-label">></span>
+        <span class="hc-prompt">ACCESS DENIED. READ-ONLY MIRROR INSTANCE.</span>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- ============================
+     DATA TERMINAL MODALS
+     ============================ -->
+
+<!-- BACKDROP: shared -->
+<div class="terminal-modal-backdrop" id="terminal-market">
+  <div class="terminal-modal">
+    <button class="terminal-close" type="button" data-terminal-close>
+      ✕
+    </button>
+    <div class="terminal-shell">
+      <div class="terminal-scanlines"></div>
+      <div class="terminal-inner">
+        <div class="terminal-topbar">
+          <span>MARKET DATA // EURODOLLAR</span>
+          <div class="terminal-topbar-divider"></div>
+          <span>SUN 5PM</span>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:4px;">
+          <div>Timeline: 1H 4H 1D 1W 1M <span style="color:#7ff9ff;">YTD</span></div>
+          <div>Pair: <span style="color:#7ff9ff;">€$ / NC-CRED</span></div>
+        </div>
+
+        <div class="market-chart">
+          <div class="market-bar mh-30"></div>
+          <div class="market-bar mh-40"></div>
+          <div class="market-bar mh-25"></div>
+          <div class="market-bar mh-65"></div>
+          <div class="market-bar mh-50"></div>
+          <div class="market-bar mh-75"></div>
+          <div class="market-bar mh-55"></div>
+          <div class="market-bar mh-80"></div>
+          <div class="market-bar mh-45"></div>
+          <div class="market-bar mh-60"></div>
+          <div class="market-bar mh-35"></div>
+          <div class="market-bar mh-70"></div>
+          <div class="market-bar mh-30"></div>
+          <div class="market-bar mh-50"></div>
+          <div class="market-bar mh-65"></div>
+          <div class="market-bar mh-40"></div>
+          <div class="market-bar mh-55"></div>
+          <div class="market-bar mh-75"></div>
+          <div class="market-bar mh-45"></div>
+          <div class="market-bar mh-60"></div>
+        </div>
+
+        <div class="terminal-bottombar">
+          <span>DATATECH (C)</span>
+          <div class="terminal-bottombar-divider"></div>
+          <span>VOL: 1.27M • Δ DAY: +3.2%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NETWATCH MODAL -->
+<div class="terminal-modal-backdrop" id="terminal-netwatch">
+  <div class="terminal-modal">
+    <button class="terminal-close" type="button" data-terminal-close>
+      ✕
+    </button>
+    <div class="terminal-shell">
+      <div class="terminal-scanlines"></div>
+      <div class="terminal-inner">
+        <div class="terminal-topbar">
+          <span>NODE: NW-SHARD-77</span>
+          <div class="terminal-topbar-divider"></div>
+          <span>STATUS: MONITOR ONLY</span>
+        </div>
+
+        <div class="netwatch-grid">
+          <div class="netwatch-column">
+            <pre>
+[SESSION] 2077-08-23 15:22
+SRC_IP  10.77.23.9
+DST_IP  172.31.88.2
+PROTO   ICE-TUN
+
+EVENT   HANDSHAKE_OK
+EVENT   ROUTE_SEAL_OK
+EVENT   BLACKWALL_PING OK
+EVENT   PAYLOAD_FLAG   CLEAN
+
+[SESSION] 2077-08-23 15:25
+SRC_IP  10.91.44.1
+DST_IP  172.31.88.2
+PROTO   HTTP/2
+
+EVENT   CONTENT_SCAN...
+EVENT   &lt;BLOCKED&gt; R.AFF121
+            </pre>
+          </div>
+
+          <div class="netwatch-column">
+            <pre>
+[DEEP_SCAN LOG]
+SEGMENT: DOGTOWN-SAT Δ77
+
+0x0040  FF 01 9A 00 6E 65 74 72 75 6E 6E 65 72
+0x004C  2F 70 61 79 6C 6F 61 64 00 00 00 00 00
+0x0060  A1 B2 45 7C 5E 0D 77 FE 1F 22 91 00 00
+
+ALERT: ANOMALY_SIG MATCH
+RULE: "SONGBIRD-PATTERN-12"
+ACTION: FORWARD -> HUMAN REVIEW
+            </pre>
+          </div>
+
+          <div class="netwatch-column">
+            <pre>
+[ICE STATUS]
+LAYER-1: PASSIVE MONITOR
+LAYER-2: ACTIVE FILTER
+LAYER-3: BLACKWALL RELAY
+LAYER-4: HUMAN OVERRIDE
+
+QUEUE: 0007 PENDING
+   • 3 x HIGH RISK
+   • 2 x DOGTOWN ORIGIN
+   • 2 x UNKNOWN VECTOR
+
+NOTE:
+Mirror is READ-ONLY.
+No intervention possible
+from this node.
+            </pre>
+          </div>
+        </div>
+
+        <div class="terminal-bottombar">
+          <span>LOG STREAM: tail -f /var/netwatch/trace.log</span>
+          <div class="terminal-bottombar-divider"></div>
+          <span>VIEW: ORION / DOGTOWN MIRROR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRAFFIC MODAL -->
+<div class="terminal-modal-backdrop" id="terminal-traffic">
+  <div class="terminal-modal">
+    <button class="terminal-close" type="button" data-terminal-close>
+      ✕
+    </button>
+    <div class="terminal-shell">
+      <div class="terminal-scanlines"></div>
+      <div class="terminal-inner">
+        <div class="terminal-topbar">
+          <span>GRID: NIGHT CITY METRO // LIVE</span>
+          <div class="terminal-topbar-divider"></div>
+          <span>MODE: ROUTE DIAGNOSTIC</span>
+        </div>
+
+        <div class="traffic-layout">
+          <div class="traffic-map">
+            <div class="traffic-road tr-1"></div>
+            <div class="traffic-road tr-2"></div>
+            <div class="traffic-road tr-3"></div>
+
+            <div class="traffic-node tn-a" data-label="CORPO PLAZA"></div>
+            <div class="traffic-node tn-b" data-label="KABUKI"></div>
+            <div class="traffic-node tn-c" data-label="DOGTOWN"></div>
+            <div class="traffic-node tn-d" data-label="PACIFICA"></div>
+            <div class="traffic-node tn-e" data-label="ARROYO HUB"></div>
+          </div>
+
+          <div class="traffic-log">
+            <pre>
+[ROUTE STATUS]
+
+CPZ  -> KBK   LOAD: 71%   GREEN
+DOG  -> CPZ   LOAD: 92%   AMBER
+PCF  -> DOG   LOAD: 64%   GREEN
+ARJ  -> DOG   LOAD: 103%  RED
+
+[EVENT FEED]
+
+15:21  INCIDENT FLAG  DOGTOWN / GATE-03
+15:22  REROUTE       TRUCK CONVOY -> ALT-Δ2
+15:24  TRAFFIC HOLD  ARASAKA ARMORED COLUMN
+15:27  NCPD NOTICE   EXPECT DELAYS 10–15 MIN
+
+NOTE:
+This mirror cannot change
+signal timings. Observation
+rights only.
+            </pre>
+          </div>
+        </div>
+
+        <div class="terminal-bottombar">
+          <span>SOURCE: NC-TRAFFIC-CORE / GRID-K • READ-ONLY TAP</span>
+          <div class="terminal-bottombar-divider"></div>
+          <span>REFRESH: EVERY 5 SEC (SIMULATED)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- ORION PROMO AD MODAL -->
+<div id="cp-ad-banner" class="cp-ad-banner">
+  <button class="cp-ad-close" id="cp-ad-close">×</button>
+  <div class="cp-ad-image-wrap">
+    <img id="cp-ad-image" src="" alt="ad">
+  </div>
+  <label class="ad-snooze">
+  <input type="checkbox" id="ad-snooze-7d">
+  Don’t show again (7 days)
+</label>
+  <div class="cp-ad-label">ORION PROMOTIONAL FEED</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- ORION INTRUSION OVERLAY (global) -->
+<div class="intrusion-overlay" id="intrusion-overlay" aria-hidden="true">
+  <div class="intrusion-inner">
+    <img class="intrusion-sigil" id="intrusion-sigil" src="media/uti/nci.png" alt="NCI Sigil">
+    <div class="intrusion-terminal">
+      <div class="intrusion-title" id="intrusion-title">NCI // TRACE VECTOR</div>
+      <pre class="intrusion-log" id="intrusion-log"></pre>
+      <div class="intrusion-caret">&gt; <span class="intrusion-cursor">_</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ORION ICE ACTIVE DEFENSE (global) -->
+<div id="orionIceOverlay" class="orion-ice hidden" aria-hidden="true">
+  <div class="orion-ice__panel">
+    <div class="orion-ice__title">
+      <span class="dot"></span>
+      <span>ORION ICE: ACTIVE DEFENSE</span>
+    </div>
+
+    <div class="orion-ice__lines" id="orionIceLines"></div>
+
+    <div class="orion-ice__barWrap">
+      <div class="orion-ice__bar" id="orionIceBar"></div>
+    </div>
+
+    <div class="orion-ice__pct" id="orionIcePct">0%</div>
+  </div>
+</div>
+
+
+<!-- BLACKWALL WATCH WARNING (global) -->
+<div id="bw-watch" class="bw-watch" aria-hidden="true">
+  <div class="bw-watch__inner">
+    <img class="bw-watch__sigil" src="media/uti/nci.png" alt="Night Corp Sigil">
+    <div class="bw-watch__text" id="bwWatchText">
+      <div>YOU ARE BEING WATCHED</div>
+      <div>EVERYTHING YOU SEE ALSO SEES YOU</div>
+      <div>THERE IS NO WAY BACK</div>
+    </div>
+    <div class="bw-watch__hint">RELOAD REQUIRED</div>
+  </div>
+</div>
+
+
+
+  <!-- Script Tags-->
+  <script type="text/JAVASCRIPT" src="script.js"></script> <!-- MAIN LOGIC -->
+  <script src="ads.js"></script> <!-- NEW: ad logic -->
+  <script src="intrusion.js"></script>
+  <script src="blackwall-watch.js"></script>
+
+
+<!--  
+ORION BACKDOOR: ACCESS LEVEL UNKNOWN  
+If you found this, you're not supposed to be here.  
+Proceed… but remember: everything you see also sees you.  
+-->
+
+
+<!--
+
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣴⣶⣶⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣦⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢀⣴⣾⣻⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢀⣴⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢠⣾⣿⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠛⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀
+⠀⠀⠀⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀
+⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣍⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀
+⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀
+⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢿⣿⡇⢸⣿⡟⢙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀
+⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠈⢿⣿⣾⡟⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀
+⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢁⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢸⣿⣿⠇⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀
+⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⣿⣿⡀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀
+⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⡇⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀
+⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣫⣽⣿⣿⣿⡟⢸⣿⣿⣿⣶⣿⡟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀
+⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⢹⣿⣿⣿⣿⣿⣿⠿⡿⠿⠿⢟⣛⣯⣥⣶⣷⣮⡛⢿⣿⣿⣿⣿⣿⣿⢻⣿⣿⠟⣊⣙⠿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀
+⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿⣿⢋⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⢻⣿⣿⣿⣿⢧⠟⣫⣶⣿⣿⣿⣿⣶⣦⣭⢡⣾⡿⠁⠀⠀⠀
+⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣮⣽⣛⣛⣿⡏⢚⣯⣭⣴⡀⠀⠀⠀⠀⠀⣦⣭⡅⣿⣿⣿⣿⡠⣾⠿⢟⣛⡛⠛⠛⠛⠛⠻⢧⢻⡇⠀⠀⠀⠀
+⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⣛⣿⣿⣷⠻⣿⣿⣿⣷⣮⣄⣈⣤⣾⣿⡟⣼⣿⣿⣿⣿⣷⡺⣿⣿⣿⣧⠀⡀⠂⠐⣸⢇⣖⡂⠀⠀⠀⠀
+⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢻⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣷⣍⡻⢿⣿⣿⣿⣿⣿⠟⣫⢞⣿⣿⣿⣿⣿⣿⣿⣮⠻⣿⣿⣿⣶⣶⡿⢫⣾⣿⣿⡄⠀⠀⠀
+⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⢁⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣷⣶⣶⢟⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠩⣭⣭⣭⣵⣾⣿⣿⣿⣿⣇⠀⠀⠀
+⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣛⣭⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⣶⣭⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⠀⢼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⣿⣿⣿⣿⣿⣿⡇⠸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠛⠿⣿⣿⣿⡄⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢫⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⠸⢿⣿⣿⣿⣿⣿⣿⣿⠿⠋⠁⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣨⣦⡈⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣵⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡌⣷⢹⣿⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⡆⢠⣈⠙⠛⠿⠿⠿⠿⢻⣿⣿⣿⣿⣿⠟⡆⢿⣟⢤⣍⡻⣿⣿⣿⣿⣿⣿⣿⡇⡏⣿⣿⣿⡟⠁⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⠁⣾⣿⣿⣿⣶⣶⣶⡆⢸⣿⣿⣿⣿⡟⣾⣿⣼⣿⣦⣿⣿⣎⠻⣿⣿⣿⣿⣿⢇⣿⡸⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⡇⢸⣿⣿⣿⡿⣼⣿⣿⣿⣿⣿⣿⣿⣿⣷⣌⣛⣛⣩⣵⣿⣿⣷⢿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⢱⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⢿⣿⠿⠿⣿⣿⣿⣿⢸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⡏⠀⣿⣿⣿⣿⣿⣿⣿⣿⣤⣿⣿⠏⣿⣿⣿⣿⣿⣿⡿⣫⣵⣾⣿⣶⣦⣾⣷⣌⢻⣿⣿⣾⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣸⣿⣿⣿⣿⡿⣫⣾⣿⣿⠟⢩⢿⣿⡿⠋⣿⣆⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⢭⣽⣭⣴⣾⣮⣬⣥⣶⣷⣶⠆⣾⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣝⠿⣿⣿⣿⣿⣿⣿⡿⢋⣾⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣮⣝⣛⣛⣋⣥⣾⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠻⢿⣿⠟⣻⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠿⣿⣿⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣉⣉⣉⡉⠛⠻⢿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⢻⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⢸⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢸⣿⣿⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠛⠻⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠁⠈⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠛⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+
+If you managed to read this far, then i have a secret for you:
+There is a hidden "Hacker Console" you can access by pressing the "~" key.
+It's just for fun and contains no real functionality, but you might enjoy the easter egg.
+  Thank you for checking out my project!
+
+-->
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Broadcast Archive // ORION Video Node</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body class="videos-body" oncontextmenu="return false;">
+
+
+
+  <!-- global neural overlay from your main site -->
+  <div class="neural-noise-overlay"></div>
+
+  <header>
+    <div class="logo">CP2077 • BROADCAST ARCHIVE</div>
+    
+  </header>
+
+  <main>
+
+    <!-- HERO PLAYER PANEL -->
+    <section class="card vid-hero">
+
+      <!-- CP77-style top bar -->
+      <div class="vid-hero-bar">
+        <span class="vhb-label">BROADCAST NODE</span>
+        <span class="vhb-divider"></span>
+        <span class="vhb-sub">CP2077 // NIGHT CITY &amp; PHANTOM LIBERTY TRANSMISSIONS</span>
+      </div>
+
+      <!-- Player -->
+      <div class="vid-hero-left">
+        <div class="vid-player-wrap">
+          <iframe
+            id="video-player"
+            src=""
+            title="Selected transmission"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+
+          <div class="vid-player-overlay" id="vid-player-overlay">
+            <span class="vid-overlay-label">NO TRANSMISSION SELECTED</span>
+            <span class="vid-overlay-sub">Choose a broadcast from the lists below.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meta panel -->
+      <aside class="vid-hero-right">
+        <h2 class="vid-meta-heading" id="vid-title">ORION Broadcast Archive</h2>
+
+        <p class="subtitle" id="vid-meta">
+          Select a Night City or Phantom Liberty transmission to load it into this node.
+        </p>
+
+        <div class="vid-meta-tags" id="vid-tags"></div>
+
+        <p class="subtitle vid-meta-desc" id="vid-desc">
+          This panel will display extra intel about the selected video: trailer type, focus character,
+          in-universe context, and any spoiler warnings.
+        </p>
+      </aside>
+
+    </section>
+
+    <!-- NIGHT CITY SECTION -->
+    <section class="card" style="margin:18px">
+      <h2>Night City Broadcasts // Core Game</h2>
+      <p class="subtitle">
+        Official transmissions centered on Night City, V and the base game.
+      </p>
+
+      <div class="vid-grid">
+
+        <!-- E3 2018 -->
+        <button
+          class="vid-card holo"
+          data-video-id="8X2kIfS6fb8"
+          data-title="Cyberpunk 2077 — Official E3 2018 Trailer"
+          data-tags="Night City, Early Reveal, Official"
+          data-desc="The first major look at Night City, showing megabuildings, gangs and the dystopian world of Cyberpunk 2077."
+        >
+          <div class="vid-thumb-img"
+               style="background-image:url('https://img.youtube.com/vi/8X2kIfS6fb8/maxresdefault.jpg');">
+          </div>
+
+          <div class="vid-card-body">
+            <p class="vid-card-title">E3 2018 Trailer</p>
+            <p class="vid-card-meta">Source: CD PROJEKT RED · Night City</p>
+          </div>
+
+          <div class="vid-screenlines"></div>
+          <div class="vid-holo-border"></div>
+        </button>
+
+        <!-- E3 2019 -->
+        <button
+          class="vid-card holo"
+          data-video-id="LembwKDo1Dk"
+          data-title="Cyberpunk 2077 — Official Cinematic Trailer | E3 2019"
+          data-tags="Night City, Keanu Reeves, Johnny Silverhand, Official"
+          data-desc="The legendary 2019 reveal introducing Johnny Silverhand and the Relic conflict."
+        >
+          <div class="vid-thumb-img"
+               style="background-image:url('https://img.youtube.com/vi/LembwKDo1Dk/maxresdefault.jpg');">
+          </div>
+
+          <div class="vid-card-body">
+            <p class="vid-card-title">E3 2019 Trailer</p>
+            <p class="vid-card-meta">Source: CD PROJEKT RED · Johnny Silverhand</p>
+          </div>
+
+          <div class="vid-screenlines"></div>
+          <div class="vid-holo-border"></div>
+        </button>
+
+        <!-- Launch trailer -->
+        <button
+          class="vid-card holo"
+          data-video-id="DvVjkqB3LH0"
+          data-title="Cyberpunk 2077 — Official Launch Trailer"
+          data-tags="Night City, Launch, Story"
+          data-desc="Launch trailer highlighting V's struggle, the heist, the Relic, and the central conflict with Johnny."
+        >
+          <div class="vid-thumb-img"
+               style="background-image:url('https://img.youtube.com/vi/DvVjkqB3LH0/maxresdefault.jpg');">
+          </div>
+
+          <div class="vid-card-body">
+            <p class="vid-card-title">Launch Trailer</p>
+            <p class="vid-card-meta">Source: CD PROJEKT RED · V / Johnny</p>
+          </div>
+
+          <div class="vid-screenlines"></div>
+          <div class="vid-holo-border"></div>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- PHANTOM LIBERTY SECTION -->
+    <section class="card" style="margin:18px">
+      <h2>Dogtown Broadcasts // Phantom Liberty</h2>
+      <p class="subtitle">
+        Transmissions related to the Dogtown theatre, Songbird, Reed and President Myers.
+        Some of these contain heavy story spoilers.
+      </p>
+
+      <div class="vid-grid">
+
+        <!-- PL story trailer (spoiler) -->
+        <button
+          class="vid-card holo"
+          data-video-id="sJbexcm4Trk"
+          data-title="Cyberpunk 2077: Phantom Liberty — Official Cinematic Trailer"
+          data-tags="Dogtown, Story, DLC, Spoilers"
+          data-desc="Story-focused cinematic trailer featuring Songbird, Solomon Reed and the NUSA storyline."
+          data-spoiler="high"
+        >
+          <div class="vid-thumb-img"
+               style="background-image:url('https://img.youtube.com/vi/sJbexcm4Trk/maxresdefault.jpg');">
+          </div>
+
+          <div class="vid-card-body">
+            <p class="vid-card-title">
+              Phantom Liberty Story Trailer
+              <span class="vid-spoiler-badge">SPOILER</span>
+            </p>
+            <p class="vid-card-meta">Source: CD PROJEKT RED · Dogtown</p>
+          </div>
+
+          <div class="vid-screenlines"></div>
+          <div class="vid-holo-border"></div>
+        </button>
+
+        <!-- PL end credits (spoiler) -->
+        <button
+          class="vid-card holo"
+          data-video-id="u15tEo0wsQI"
+          data-title="Dawid Podsiadło — Phantom Liberty (Official Music Video)"
+          data-tags="Music, End Credits, Spoilers"
+          data-desc="The official end-credits track for Phantom Liberty. Major ending spoilers."
+          data-spoiler="high"
+        >
+          <div class="vid-thumb-img"
+               style="background-image:url('https://img.youtube.com/vi/u15tEo0wsQI/maxresdefault.jpg');">
+          </div>
+
+          <div class="vid-card-body">
+            <p class="vid-card-title">
+              Dawid Podsiadło — Phantom Liberty
+              <span class="vid-spoiler-badge">SPOILER</span>
+            </p>
+            <p class="vid-card-meta">Source: Official Music Video · Heavy Spoilers</p>
+          </div>
+
+          <div class="vid-screenlines"></div>
+          <div class="vid-holo-border"></div>
+        </button>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="card">
+    <small>ORION broadcast node — embeds external video sources. All video content © their respective creators.</small>
+  </footer>
+
+  <!-- SPOILER WARNING MODAL -->
+  <div class="spoiler-modal" id="spoiler-modal" aria-hidden="true">
+    <div class="spoiler-box">
+      <div class="spoiler-header">
+        <span class="spoiler-label">SPOILER WARNING</span>
+        <span class="spoiler-sub">Phantom Liberty // High-Risk Narrative Content</span>
+      </div>
+      <p class="spoiler-text" id="spoiler-text">
+        This broadcast contains story spoilers. Are you sure you want to proceed?
+      </p>
+
+      <div class="spoiler-actions">
+        <button class="btn spoiler-btn-cancel" id="spoiler-cancel">Back to Archive</button>
+        <button class="btn spoiler-btn-confirm" id="spoiler-confirm">Play Anyway</button>
+      </div>
+
+      <p class="spoiler-footnote">
+        Tip: Watch core Night City trailers first if you haven't finished the base game.
+      </p>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    function setActiveVideo(card) {
+      const player = document.getElementById("video-player");
+      const overlay = document.getElementById("vid-player-overlay");
+      const titleEl = document.getElementById("vid-title");
+      const metaEl = document.getElementById("vid-meta");
+      const tagsEl = document.getElementById("vid-tags");
+      const descEl = document.getElementById("vid-desc");
+
+      const videoId = card.dataset.videoId;
+      const title = card.dataset.title || "Selected transmission";
+      const tags = (card.dataset.tags || "").split(",").map(t => t.trim()).filter(Boolean);
+      const desc = card.dataset.desc || "";
+      const isSpoiler = card.dataset.spoiler;
+
+      if (videoId) {
+        player.src = "https://www.youtube.com/embed/" + videoId + "?rel=0&modestbranding=1";
+        overlay.style.display = "none";
+      }
+
+      titleEl.textContent = title;
+      metaEl.textContent = isSpoiler
+        ? "Loaded from external source. Flagged as HIGH SPOILER RISK."
+        : "Loaded from external broadcast source.";
+      descEl.textContent = desc || "";
+
+      tagsEl.innerHTML = "";
+      tags.forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "vid-tag-pill";
+        span.textContent = tag;
+        tagsEl.appendChild(span);
+      });
+
+      document.querySelectorAll(".vid-card").forEach(btn => btn.classList.remove("active"));
+      card.classList.add("active");
+    }
+
+    let pendingSpoilerCard = null;
+
+    function openSpoilerModal(card) {
+      pendingSpoilerCard = card;
+      const modal = document.getElementById("spoiler-modal");
+      const textEl = document.getElementById("spoiler-text");
+      const title = card.dataset.title || "this broadcast";
+
+      textEl.textContent =
+        "The selected broadcast (“" + title + "”) contains story spoilers for Phantom Liberty. Are you sure you want to proceed?";
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSpoilerModal() {
+      const modal = document.getElementById("spoiler-modal");
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      pendingSpoilerCard = null;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const cards = document.querySelectorAll(".vid-card");
+
+      cards.forEach(card => {
+        card.addEventListener("click", () => {
+          if (card.dataset.spoiler) {
+            openSpoilerModal(card);
+          } else {
+            setActiveVideo(card);
+          }
+        });
+      });
+
+      const cancelBtn = document.getElementById("spoiler-cancel");
+      const confirmBtn = document.getElementById("spoiler-confirm");
+      const modal = document.getElementById("spoiler-modal");
+
+      cancelBtn.addEventListener("click", () => {
+        closeSpoilerModal();
+      });
+
+      confirmBtn.addEventListener("click", () => {
+        if (pendingSpoilerCard) {
+          setActiveVideo(pendingSpoilerCard);
+        }
+        closeSpoilerModal();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("open")) {
+          e.preventDefault();
+          closeSpoilerModal();
+        }
+      });
+
+      // Auto-select first non-spoiler video (E3 2018)
+      const firstSafe = Array.from(cards).find(c => !c.dataset.spoiler);
+      if (firstSafe) setActiveVideo(firstSafe);
+    });
+  </script>
+
+
+
+<!-- AD POPUP: ORION SPONSOR NODE -->
+<div class="ad-modal" id="ad-modal" aria-hidden="true">
+  <div class="ad-inner">
+    <div class="ad-header">
+      <span class="ad-label">SPONSORED TRANSMISSION</span>
+      <button class="ad-close-btn" id="ad-close-btn" aria-label="Close ad">
+        ✕
+      </button>
+    </div>
+
+    <div class="ad-body">
+      <div class="ad-frame">
+        <img id="ad-image" src="" alt="Sponsored content" loading="lazy">
+      </div>
+    </div>
+
+    <div class="ad-footer">
+      <span class="ad-meta">
+        ORION node // ad-ref: <span id="ad-id">ADS-000</span>
+      </span>
+      <span class="ad-disclaimer">
+        Fan-run mirror. External ads may not reflect CD PROJEKT RED views.
+      </span>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- BLACKWALL WATCH WARNING (global) -->
+<div id="bw-watch" class="bw-watch" aria-hidden="true">
+  <div class="bw-watch__inner">
+    <img class="bw-watch__sigil" src="media/uti/nci.png" alt="Night Corp Sigil">
+    <div class="bw-watch__text" id="bwWatchText">
+      <div>YOU ARE BEING WATCHED</div>
+      <div>EVERYTHING YOU SEE ALSO SEES YOU</div>
+      <div>THERE IS NO WAY BACK</div>
+    </div>
+    <div class="bw-watch__hint">RELOAD REQUIRED</div>
+  </div>
+</div>
+
+
+
+  <script src="ads.js"></script> <!-- NEW: ad logic -->
+  <script src="intrusion.js"></script>
+  <script src="blackwall-watch.js"></script>
+
+
+
+
+
+  <script>
+  // Any link that goes to index.html will set "skip boot" for the next index visit
+  document.querySelectorAll('a[href$="index.html"], a[href*="index.html#"], a[href*="index.html?"]').forEach(a => {
+    a.addEventListener("click", () => {
+      sessionStorage.setItem("orion_skip_boot", "1");
+    });
+  });
+</script>
+
+
+
+<!--  
+BLACKWALL PARASITE SIGNATURE CONFIRMED  
+This ASCII pattern ISN’T SUPPOSED to exist.  
+Someone grafted it here from the Deep Net.  
+-->
+
+
+
+<!--
+
+
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣠⣤⣤⣴⣦⣶⣶⣶⣶⣶⣶⣴⣤⣤⣤⣤⣄⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⠿⠛⠛⠋⠉⠉⠁⠉⠈⠁⠉⠈⠉⠉⠉⠉⠛⠛⠿⢿⣿⣾⣵⣤⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⡿⠛⠋⠀⠀⠁⣈⣉⣉⣭⣁⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣾⣿⣿⣿⣿⣿⣿⣷⣆⣤⣀⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢀⣴⣿⣿⠟⠁⠀⣀⣤⣴⣶⡿⠿⠛⠛⠉⠩⠌⠹⠶⠶⠦⠤⠤⠤⠤⠤⠴⠛⠋⠉⠀⠀⠀⢉⣹⣽⣿⣿⣿⣿⣶⣿⣖⡤⡀⠀⠀
+⠀⠀⠀⢀⣴⣾⣿⠏⠁⣀⣴⣾⣿⠿⠋⢁⣠⣴⣶⣶⣶⣶⣶⣶⡒⠀⠂⠁⠀⠂⠒⠀⠀⠀⠀⠀⢀⣤⣶⠟⠋⠉⠉⠙⣻⣿⣿⣿⣿⣿⠇⠀⠀
+⠀⠀⢀⣾⣿⡟⠁⣠⣾⣿⣿⠟⠁⢀⣴⡿⠛⠉⠀⠀⠀⠈⠉⠛⢷⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⡿⠋⠀⠀⠀⠀⣰⣾⣿⣿⠏⢿⣿⡏⠀⠀⠀
+⠀⢀⣾⣿⡟⠠⠚⠛⠙⠋⠁⠀⢀⣾⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⡇⠀⠀⠀⠀⠀⠀⠀⣸⡟⠁⠀⠀⠀⠀⠀⠈⠙⠛⠋⠀⣼⣿⡇⠀⠀⠀
+⠀⢸⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⣸⡟⠀⢀⣤⣤⣄⡀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⢇⠀⠀⠀
+⠀⣼⣿⡇⠀⠀⠀⠀⠀⠀⣄⣠⣿⡇⠀⢸⣿⣿⣿⣿⠄⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⢻⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⡟⣿⣿⠀⠀⠀
+⠀⣾⣿⠁⠀⠀⠀⠀⣠⣴⠿⠿⣿⣿⣄⠹⢿⠿⠟⠁⠀⠀⠀⠀⢀⣾⠏⠀⠀⠀⠀⠀⠀⠀⠈⠻⢷⣶⣤⣤⣤⣶⣶⣶⣶⣿⣯⣀⣿⣿⡆⠀⠀
+⢰⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⣴⠗⠛⠛⢷⣦⣄⣀⣀⢀⣀⣠⣴⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣨⣿⠟⠁⠀⠀⠀⠀⠉⠛⢿⣿⣗⡀⠀
+⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠘⠁⠀⠀⠀⠀⠈⠉⠛⠛⠛⠛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣴⣾⠟⠁⢀⣤⣶⠿⠿⣶⣤⡀⠀⠹⣿⡷⡄
+⢸⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠒⠛⠛⠓⠛⠛⠛⠛⠉⢉⣿⡏⠀⢠⣾⣿⣀⣀⣀⠀⠹⣷⡀⠀⢸⣿⣷
+⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣒⠒⠲⠒⠶⠲⠮⠟⠋⠀⢠⣿⡟⠀⢠⣿⠟⢻⡟⠹⡿⢻⣿⢿⣧⠀⠠⣿⡿
+⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠒⠶⠶⠴⠤⠴⠂⠁⣿⣿⠁⠀⣾⣿⣤⠿⡶⣴⢷⣼⣯⣴⣿⡀⢰⣿⣿
+⢸⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⣤⣤⣤⡄⠀⠀⡀⢹⣿⠀⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⢀⣿⠃⣸⣿⠇
+⠈⣿⣇⠀⢸⡄⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⡆⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⣸⡟⢠⣿⡿⠀
+⠀⣿⣿⡀⠀⢷⡀⠀⢷⠀⠀⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⡇⠀⣿⡇⠀⠀⠀⠀⠀⠀⢰⡿⠁⣼⣿⠁⠀
+⠀⠘⣿⣧⠀⠘⣷⡀⢸⡇⠀⠈⢷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢺⡗⠀⣿⡇⠀⠀⠀⠀⠀⢀⣿⠇⠀⣿⣇⠀⠀
+⠀⠀⢹⣿⡄⠀⠈⢷⡈⢿⡀⠀⠀⠙⣦⠀⠀⠀⠀⠀⠀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡟⠀⣿⡇⠀⠀⠀⠀⠀⢸⣿⠀⠀⣿⣯⡀⠀
+⠀⠀⠈⣿⣿⠀⠀⠈⢧⠂⢧⠀⠀⠀⠈⢷⠀⠀⠀⠀⠀⠀⢉⣩⣉⣙⠲⢤⡀⠀⠀⠀⠀⠀⠀⣿⡇⢠⣿⠀⠀⠀⠀⠀⠀⠸⣿⡀⠀⢹⣿⣇⠀
+⠀⠀⠀⠘⣿⣧⠀⠀⠈⣧⠘⣇⠀⠀⠀⢸⡇⠀⠀⠀⠀⠀⠀⢀⣀⣈⡙⠲⢍⣦⡀⠀⠀⠀⢸⡿⠀⢸⡿⠶⠤⣤⣄⡀⠀⠀⢿⡇⠀⠈⣿⠟⠀
+⠀⠀⠀⠀⠸⣿⣆⠀⠀⠸⡔⠸⡄⠀⠀⠸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠶⣤⡈⠙⠀⠀⢀⣿⠃⠀⣿⠇⠀⠀⠀⠈⠙⢦⡀⠸⣿⠀⠀⣿⠀⠀
+⠀⠀⠀⠀⠀⢹⣿⣆⠀⠀⢻⡌⢻⡄⠀⠀⠻⣆⠀⠀⠀⠀⠰⠴⢦⣤⣀⡀⠈⠻⣦⡀⠀⣸⡟⠀⢠⣿⡀⡀⢀⠀⡀⢀⣈⣻⣤⣿⠀⠀⣿⠀⠀
+⠀⠀⠀⠀⠀⠀⣿⣿⡄⠀⠀⢹⡄⢻⡄⠀⠀⠈⢱⡄⠀⠀⠀⠀⠀⠀⠉⠙⣶⡄⠀⠉⠂⣿⡇⠀⢸⣿⠛⠛⡟⠛⣿⠛⡏⠉⢹⡟⠀⠀⣿⠃⠀
+⠀⠀⠀⠀⠀⠀⠘⣿⣿⡄⠀⠀⠻⣅⠹⢦⣀⠀⠀⠉⠲⣄⠀⠀⠀⠀⠀⠀⠈⠙⢷⣄⠀⣿⡇⠀⠈⣿⣦⣰⣿⣤⣿⠀⣿⣀⣿⠇⠀⢠⣿⠃⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⣆⠀⠀⠈⠳⣄⠈⠙⠶⣄⡀⠈⠻⢦⡀⠀⠀⠀⠀⠀⠀⠘⢷⣿⡇⠀⠀⠹⣿⡉⠀⠈⠙⠛⢛⣿⠏⠀⠀⣼⣿⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣷⣄⠀⠀⠈⠙⠶⣤⣈⠛⠲⢤⣀⠁⠂⠀⠀⠀⠀⠀⠀⠀⢻⣿⡀⠀⠀⠉⠻⢷⣶⣶⡶⠿⠋⠀⠀⣸⣿⡟⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠿⣿⣦⣄⠀⠀⠀⠉⠓⠶⠦⣌⣙⠲⠤⠤⢤⣤⣄⣀⣀⠀⠿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣿⠗⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⢿⣿⣷⣦⣄⡀⠀⠀⠀⠈⠉⠓⠺⠴⣦⣤⣍⣉⣉⣉⠉⠛⠿⣶⣶⣤⣤⣤⣶⣶⣿⣿⠟⠁⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⠿⣿⣷⣶⣤⣄⣀⠀⠀⠀⠀⠀⠈⠉⠉⠁⢀⣀⣀⣀⣠⣽⣿⡿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⢿⣿⣿⣶⣤⣀⡀⠀⠀⢀⣀⣾⣿⣿⡿⠿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⢿⣿⣟⣿⡻⠿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+
+
+-->
+
+
+
+
+
+</body>
+</html>

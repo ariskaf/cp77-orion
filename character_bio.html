@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Character Bio // ORION Archive</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body class="bio-body" oncontextmenu="return false;">
+
+  <!-- optional, if you still want global noise -->
+  <div class="neural-noise-overlay"></div>
+
+  <header class="bio-header">
+  <div class="bio-header-left">
+    <span class="bio-proto-label">ORION // CHARACTER ARCHIVE</span>
+    <span id="bio-file-id" class="bio-file-id">FILE: NC-XX-000</span>
+  </div>
+</header>
+
+
+  <main class="bio-screen">
+    <div class="bio-main">
+
+      <!-- LEFT: CHARACTER RENDER -->
+      <div class="bio-left">
+        <img id="bio-image" src="" alt="Character portrait" class="bio-image-hi">
+      </div>
+
+      <!-- RIGHT: INFO PANEL -->
+      <section class="bio-panel">
+        <div class="bio-panel-header">
+          <h1 id="bio-name" class="bio-name">CHARACTER NAME</h1>
+          <p id="bio-alias" class="bio-alias-line">Role / short tagline</p>
+        </div>
+
+        <div class="bio-panel-meta">
+          <span id="bio-faction" class="bio-pill">FACTION</span>
+          <span id="bio-region" class="bio-pill">REGION</span>
+          <span id="bio-type" class="bio-pill">TYPE</span>
+        </div>
+
+        <div class="bio-panel-body">
+          <p id="bio-text" class="bio-text">
+            Loading ORION dossier from archive…
+          </p>
+        </div>
+
+        <div class="bio-panel-footer">
+          <span id="bio-notes" class="bio-notes">
+            ORION node notes and flags will appear here.
+          </span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ESC / CLOSE BUTTON -->
+    <button class="bio-close-btn" id="bio-close-btn">
+      <span class="bio-close-key">ESC</span>
+      <span class="bio-close-label">CLOSE</span>
+    </button>
+  </main>
+
+  <footer class="bio-footer">
+    <small>Fan-made ORION mirror node. Character likeness & names © CD PROJEKT RED.</small>
+  </footer>
+
+  <script>
+    // ===== Character data (you extend this object) =====
+    const CHARACTER_DATA = {
+  // ===== CORE / NC =====
+  v: {
+    id: "NC-CNS-V-03",
+    name: "V",
+    alias: "Mercenary with Relic exposure and unusually high survival rate.",
+    faction: "Freelance",
+    region: "Night City",
+    type: "Night City / Relic",
+    image: "media/characters/nc/v.png",
+    bio: "A merc who moves like a glitch in the city’s kill-chain. Every faction wants a piece—few survive getting close.",
+    notes: "Profile flags extreme adaptability and high-risk decision patterns. Subject becomes a force multiplier when cornered—best handled with leverage, not threats."
+  },
+
+  panam: {
+    id: "NC-NMD-PAN-01",
+    name: "Panam Palmer",
+    alias: "Aldecaldos sniper, ex-nomad with a long memory.",
+    faction: "Aldecaldos",
+    region: "NC Badlands",
+    type: "Night City / Nomad",
+    image: "media/characters/nc/panam.png",
+    bio: "A sharp-eyed nomad with the temper to match her aim. Loyalty is currency—betrayal is a death sentence.",
+    notes: "Operationally volatile, but fiercely loyal once trust is earned. Strong protective instincts toward clan assets."
+  },
+
+  judy: {
+    id: "NC-MOX-JDY-03",
+    name: "Judy Alvarez",
+    alias: "Braindance tech, Mox-aligned editor and activist.",
+    faction: "The Mox",
+    region: "Watson / Lizzie's Bar",
+    type: "Night City",
+    image: "media/characters/nc/judy.png",
+    bio: "A top-tier braindance editor with a soft spot for people the city chews up. Dangerous when pushed.",
+    notes: "Profile flags strong sense of justice and low tolerance for exploitation. Building trust opens access to high-end braindance tech and deeply personal storylines."
+  },
+
+  rogue: {
+    id: "NC-FXR-RGE-04",
+    name: "Rogue Amendiares",
+    alias: "Fixer royalty—Afterlife’s queen and Night City’s quiet power.",
+    faction: "Independent",
+    region: "Afterlife",
+    type: "Night City / Fixer",
+    image: "media/characters/nc/rogue.png",
+    bio: "A legend who survived by treating emotions like liabilities. She doesn’t rule by fear—she rules by receipts.",
+    notes: "Profile flags ruthless pragmatism and long-term strategic thinking. If Rogue offers a hand, check what she’s holding behind her back."
+  },
+
+  johnny: {
+    id: "NC-LGN-JHN-77",
+    name: "Johnny Silverhand",
+    alias: "Rockboy / digital ghost with a war in his head.",
+    faction: "Samurai",
+    region: "Relic / Cyberspace",
+    type: "Night City / Construct",
+    image: "media/characters/nc/johnny.png",
+    bio: "A relic of rebellion—loud, charismatic, and impossible to ignore. Even dead, he starts fires.",
+    notes: "Profile flags ideological fixation and high influence on host behavior. Subject weaponizes guilt, pride, and nostalgia with surgical precision."
+  },
+
+  alt: {
+    id: "NC-AI-ALT-01",
+    name: "Alt Cunningham",
+    alias: "Prototype netrunner legend; post-Blackwall entity.",
+    faction: "Unknown",
+    region: "Cyberspace",
+    type: "Construct / AI",
+    image: "media/characters/nc/alt.png",
+    bio: "A name whispered like a warning. Alt exists where human rules stop applying.",
+    notes: "Profile flags non-human cognition markers and near-total strategic opacity. Engagement recommended only through insulated proxies."
+  },
+
+  hellman: {
+    id: "NC-ARA-HLM-02",
+    name: "Anders Hellman",
+    alias: "Arasaka Relic scientist—brilliant, terrified, and useful.",
+    faction: "Arasaka",
+    region: "Corporate R&D",
+    type: "Night City / Corpo",
+    image: "media/characters/nc/hellman.png",
+    bio: "A lab rat who helped build immortality tech, then realized what it really costs.",
+    notes: "Profile flags high technical value and low field resilience. Subject folds under pressure—best extracted via controlled fear."
+  },
+
+  carol: {
+    id: "NC-NMD-CRL-03",
+    name: "Carol",
+    alias: "Aldecaldos wrench-queen; keeps steel alive in the Badlands.",
+    faction: "Aldecaldos",
+    region: "Badlands",
+    type: "Nomad",
+    image: "media/characters/nc/carol.png",
+    bio: "If it has an engine, she can make it sing—or scream. The clan runs on her hands.",
+    notes: "Profile flags high competence and strong clan cohesion influence. Damaging her assets triggers rapid nomad retaliation."
+  },
+
+  delamain: {
+    id: "NC-AI-DLM-07",
+    name: "Delamain",
+    alias: "Autonomous cab AI with too many personalities for comfort.",
+    faction: "Independent AI",
+    region: "Night City Grid",
+    type: "AI / Transport",
+    image: "media/characters/nc/delamain.png",
+    bio: "A polite voice hiding a maze of fractured logic. In Night City, even taxis have secrets.",
+    notes: "Profile flags emergent behavior and recursive identity drift. Treat as sentient—because it acts like it is."
+  },
+
+  dexter: {
+    id: "NC-FXR-DEX-08",
+    name: "Dexter DeShawn",
+    alias: "Fixer with expensive taste and disposable loyalties.",
+    faction: "Independent",
+    region: "Watson",
+    type: "Fixer",
+    image: "media/characters/nc/dexter.png",
+    bio: "Big talk, big deals, bigger consequences. Dexter’s business model: promise everything, pay nothing.",
+    notes: "Profile flags opportunistic betrayal risk. Subject values reputation until survival is threatened—then values exits."
+  },
+
+  evelyn: {
+    id: "NC-DLL-EVP-11",
+    name: "Evelyn Parker",
+    alias: "Operator with ambition sharp enough to cut glass.",
+    faction: "Clouds",
+    region: "Westbrook",
+    type: "Night City",
+    image: "media/characters/nc/evelyn.png",
+    bio: "A player who aimed too high and got caught in corporate crossfire.",
+    notes: "Profile flags high social engineering skill and high exposure to exploitative networks. Subject attracts predators and power brokers alike."
+  },
+
+  takemura: {
+    id: "NC-ARA-GTK-13",
+    name: "Goro Takemura",
+    alias: "Arasaka soldier—honor-coded and hard to break.",
+    faction: "Arasaka",
+    region: "Night City",
+    type: "Corpo Security",
+    image: "media/characters/nc/goro.png",
+    bio: "A loyal blade looking for a master worth serving. His calm is a weapon.",
+    notes: "Profile flags high discipline and mission fixation. Subject’s honor framework is exploitable via structured obligations."
+  },
+
+  hanako: {
+    id: "NC-ARA-HNK-14",
+    name: "Hanako Arasaka",
+    alias: "The polite face of a corporation that eats souls.",
+    faction: "Arasaka",
+    region: "Corporate",
+    type: "Executive",
+    image: "media/characters/nc/hanako.png",
+    bio: "Soft voice, hard power. Hanako moves crises like chess pieces.",
+    notes: "Profile flags extreme influence and high containment priority. Any engagement escalates quickly to corporate retaliation."
+  },
+
+  jackie: {
+    id: "NC-MRC-JKW-15",
+    name: "Jackie Welles",
+    alias: "Heywood merc—big heart, bigger dreams.",
+    faction: "Valentinos",
+    region: "Heywood",
+    type: "Night City",
+    image: "media/characters/nc/jackie.png",
+    bio: "A street soldier who believed in something better. Night City rarely forgives that.",
+    notes: "Profile flags strong loyalty bonding and high motivational influence on allied operators. Loss events create long-tail trauma effects."
+  },
+
+  kerry: {
+    id: "NC-MUS-KRY-16",
+    name: "Kerry Eurodyne",
+    alias: "Rock icon with a haunted legacy.",
+    faction: "Samurai",
+    region: "Westbrook",
+    type: "Night City / Media",
+    image: "media/characters/nc/kerry.png",
+    bio: "Fame doesn’t make you bulletproof—just easier to aim at.",
+    notes: "Profile flags identity conflict and volatility under pressure. Subject’s influence network is wide but emotionally unstable."
+  },
+
+  lizzy_wizzy: {
+    id: "NC-ENT-LZW-17",
+    name: "Lizzy Wizzy",
+    alias: "Chrome diva—beautiful, lethal, and completely over it.",
+    faction: "Entertainment",
+    region: "Night City",
+    type: "Celebrity",
+    image: "media/characters/nc/lizzy.png",
+    bio: "A star who replaced flesh with metal and learned that emptiness still echoes.",
+    notes: "Profile flags impulsive violence risk under emotional triggers. Maintain distance; keep interactions controlled and documented."
+  },
+
+  maiko: {
+    id: "NC-TYG-MKO-18",
+    name: "Maiko Maeda",
+    alias: "Clouds management; corporate instincts with gang claws.",
+    faction: "Tyger Claws",
+    region: "Westbrook",
+    type: "Night City / Gang",
+    image: "media/characters/nc/maiko.png",
+    bio: "Knows how to smile while tightening the leash. Power is her comfort zone.",
+    notes: "Profile flags negotiation skill and coercion tendency. Subject leverages ‘stability’ language to justify exploitation."
+  },
+
+  mama_welles: {
+    id: "NC-CIV-MMW-19",
+    name: "Mama Welles",
+    alias: "Family anchor in Heywood—respected and feared in equal measure.",
+    faction: "Community",
+    region: "Heywood",
+    type: "Night City",
+    image: "media/characters/nc/mama.png",
+    bio: "The kind of person Night City can’t corrupt—so it tries to break her instead.",
+    notes: "Profile flags strong community influence. Harm to subject triggers rapid escalation among local networks."
+  },
+
+  mamabrigide: {
+    id: "NC-VDB-MBG-20",
+    name: "Maman Brigitte",
+    alias: "VDB leader—Blackwall obsession specialist.",
+    faction: "Voodoo Boys",
+    region: "Pacifica",
+    type: "Gang / Netrunner",
+    image: "media/characters/nc/mamam.png",
+    bio: "She treats the Blackwall like a door. Most people know it’s a cage.",
+    notes: "Profile flags high-risk net activity and extreme secrecy discipline. Engagement likely leads to double-cross or data extraction attempts."
+  },
+
+  misty: {
+    id: "NC-CIV-MST-21",
+    name: "Misty",
+    alias: "Tarot reader; calm voice in a city that screams.",
+    faction: "Unaffiliated",
+    region: "Watson",
+    type: "Night City",
+    image: "media/characters/nc/misty.png",
+    bio: "She sees patterns where others see noise. Sometimes she’s right.",
+    notes: "Profile flags high empathy and low manipulation tolerance. Subject becomes a stability anchor for nearby operators."
+  },
+
+  mitch: {
+    id: "NC-NMD-MCH-22",
+    name: "Mitch",
+    alias: "Aldecaldos veteran; logistics, security, and quiet competence.",
+    faction: "Aldecaldos",
+    region: "Badlands",
+    type: "Nomad",
+    image: "media/characters/nc/mitch.png",
+    bio: "Not loud, not flashy—just the kind of guy who makes sure you get home.",
+    notes: "Profile flags high reliability and strong protective behavior. Subject favors planning over improvisation."
+  },
+
+  nix: {
+    id: "NC-NTR-NIX-23",
+    name: "Nix",
+    alias: "Afterlife netrunner; the guy you call when doors stop being doors.",
+    faction: "Afterlife",
+    region: "Watson",
+    type: "Netrunner",
+    image: "media/characters/nc/nix.png",
+    bio: "Lives behind layers of ice and sarcasm. The net is his natural habitat.",
+    notes: "Profile flags high technical skill and medium trust volatility. Subject responds well to competence; poorly to authority."
+  },
+
+  oda: {
+    id: "NC-ARA-ODA-24",
+    name: "Oda",
+    alias: "Arasaka bodyguard trained to end problems fast.",
+    faction: "Arasaka",
+    region: "Night City",
+    type: "Security",
+    image: "media/characters/nc/oda.png",
+    bio: "He’s the kind of threat you don’t notice until the room goes quiet.",
+    notes: "Profile flags elite combat capability and strict loyalty to principal. Do not engage without overwhelming advantage."
+  },
+
+  placide: {
+    id: "NC-VDB-PLC-25",
+    name: "Placide",
+    alias: "VDB enforcer; smiles like a warning label.",
+    faction: "Voodoo Boys",
+    region: "Pacifica",
+    type: "Gang",
+    image: "media/characters/nc/placide.png",
+    bio: "Built like a wall and just as friendly. He doesn’t negotiate—he measures.",
+    notes: "Profile flags intimidation-first behavior and low compromise threshold. Engagement often escalates to violence."
+  },
+
+  river: {
+    id: "NC-NCPD-RVR-26",
+    name: "River Ward",
+    alias: "Detective with a conscience—rare, dangerous trait in NC.",
+    faction: "NCPD",
+    region: "Night City",
+    type: "Law / Investigator",
+    image: "media/characters/nc/river.png",
+    bio: "A cop who still believes the truth matters. Night City punishes that belief.",
+    notes: "Profile flags strong protective instincts and persistent investigation behavior. Subject resists corruption but is vulnerable to personal leverage."
+  },
+
+  royce: {
+    id: "NC-MLM-RYC-27",
+    name: "Royce",
+    alias: "Maelstrom—chrome-heavy, paranoia-driven violence engine.",
+    faction: "Maelstrom",
+    region: "Watson",
+    type: "Gang",
+    image: "media/characters/nc/royce.png",
+    bio: "The kind of guy who hears betrayal in static and answers with bullets.",
+    notes: "Profile flags extreme instability and high escalation probability. Avoid direct contact; use intermediaries."
+  },
+
+  saburo: {
+    id: "NC-ARA-SBR-28",
+    name: "Saburo Arasaka",
+    alias: "Arasaka patriarch—legacy built on control and fear.",
+    faction: "Arasaka",
+    region: "Corporate",
+    type: "Executive",
+    image: "media/characters/nc/saburo.png",
+    bio: "A man who treated death like a scheduling problem—and nearly solved it.",
+    notes: "Profile flags extreme influence and historical atrocity markers. Any associated operation becomes geopolitical."
+  },
+
+  sandra: {
+    id: "NC-CIV-SND-29",
+    name: "Sandra Dorsett",
+    alias: "Data courier who knows too much and sleeps too little.",
+    faction: "Unaffiliated",
+    region: "Watson",
+    type: "Night City",
+    image: "media/characters/nc/sandra.png",
+    bio: "Caught in the wrong stream of encrypted truth. Survived—barely.",
+    notes: "Profile flags high information exposure and strong paranoia development. Subject may hold leverage-grade data."
+  },
+
+  saul: {
+    id: "NC-NMD-SUL-30",
+    name: "Saul",
+    alias: "Aldecaldos leader—hard choices, hard lines.",
+    faction: "Aldecaldos",
+    region: "Badlands",
+    type: "Nomad",
+    image: "media/characters/nc/saul.png",
+    bio: "He keeps the clan alive by doing what softer leaders can’t.",
+    notes: "Profile flags high responsibility fixation and low tolerance for reckless operators. Negotiations must respect clan priorities."
+  },
+
+  tbug: {
+    id: "NC-NTR-TBG-31",
+    name: "T-Bug",
+    alias: "Netrunner for hire; calm voice in a firefight.",
+    faction: "Freelance",
+    region: "Night City Net",
+    type: "Netrunner",
+    image: "media/characters/nc/t-bug.png",
+    bio: "The kind of professional who makes impossible jobs look routine—until they don’t.",
+    notes: "Profile flags strong operational discipline and low exposure tolerance. Subject avoids spotlight and cuts losses fast."
+  },
+
+  us_cracks: {
+    id: "NC-ENT-USC-32",
+    name: "Us Cracks",
+    alias: "Idol trio—manufactured chaos with weaponized popularity.",
+    faction: "Entertainment",
+    region: "Night City",
+    type: "Media",
+    image: "media/characters/nc/us_cracks.png",
+    bio: "Bright lights, sharp edges. In Night City, ‘cute’ is often a mask for control.",
+    notes: "Profile flags high brand leverage and corporate entanglement risk. Engagement may trigger PR retaliation or legal pressure."
+  },
+
+  viktor: {
+    id: "NC-RPR-VIK-33",
+    name: "Viktor Vektor",
+    alias: "Ripperdoc with a backbone—and a quiet code of honor.",
+    faction: "Independent",
+    region: "Watson",
+    type: "Ripperdoc",
+    image: "media/characters/nc/viktor.png",
+    bio: "Fixes bodies for people who can’t afford to break. Doesn’t ask questions—until it matters.",
+    notes: "Profile flags high moral consistency and strong loyalty to close contacts. Threats against patients provoke decisive response."
+  },
+
+  yorinobu: {
+    id: "NC-ARA-YRB-34",
+    name: "Yorinobu Arasaka",
+    alias: "Arasaka heir turned internal threat vector.",
+    faction: "Arasaka",
+    region: "Corporate",
+    type: "Executive",
+    image: "media/characters/nc/yorinobu.png",
+    bio: "He wanted to burn his father’s empire. Turns out empires burn back.",
+    notes: "Profile flags high unpredictability and ideological conflict. Subject’s actions destabilize large-scale corporate structures."
+  },
+
+
+
+
+  // ===== PL / DOGTOWN (you already have these + I’m extending) =====
+  songbird: {
+    id: "NUSA-INT-SB-11",
+    name: "Songbird (So Mi)",
+    alias: "NUSA netrunner embedded in Dogtown operations.",
+    faction: "NUSA / FIA",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/songbird.png",
+    bio: "A netrunner carrying secrets heavy enough to sink a nation. She smiles like she’s already gone.",
+    notes: "Profile flags Relic-adjacent instability and extreme intelligence value. Subject draws Blackwall attention—collateral risk is guaranteed."
+  },
+
+  reed: {
+    id: "FIA-PL-REED-09",
+    name: "Solomon Reed",
+    alias: "FIA deep cover—patient, lethal, and hard to read.",
+    faction: "FIA",
+    region: "Night City / Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/reed.png",
+    bio: "A man built from duty and regret. When he moves, people disappear quietly.",
+    notes: "Profile flags high discipline and long-term deception capability. Trust is earned slowly; betrayal is handled instantly."
+  },
+
+  myers: {
+    id: "NUSA-PRE-MYR-01",
+    name: "Rosalind Myers",
+    alias: "President of the NUSA—power wrapped in patriotic steel.",
+    faction: "NUSA",
+    region: "Federal / Dogtown Ops",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/rosaline.png",
+    bio: "She doesn’t ask for loyalty—she assumes it. Anyone who refuses becomes an example.",
+    notes: "Profile flags extreme authority leverage and high operational ruthlessness. Subject uses ‘national security’ to justify anything."
+  },
+
+  hansen: {
+    id: "DGT-MIL-HSN-02",
+    name: "Kurt Hansen",
+    alias: "Dogtown warlord—military discipline turned private empire.",
+    faction: "Barghest",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/hansen.png",
+    bio: "A soldier who stopped taking orders and started selling them.",
+    notes: "Profile flags authoritarian control patterns and high territorial aggression. Any intrusion is treated as a declaration of war."
+  },
+
+  alex: {
+    id: "NUSA-FIA-ALX-12",
+    name: "Alex “Alena” Xenakis",
+    alias: "FIA operative—charming surface, razor underneath.",
+    faction: "NUSA / FIA",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/alena.png",
+    bio: "She plays roles like breathing. If you think you ‘know’ her, you’re already compromised.",
+    notes: "Profile flags high social camouflage and opportunistic survivability. Subject weaponizes trust—then makes it feel like your idea."
+  },
+
+  // ===== PL extras you listed =====
+  angelica: {
+    id: "DGT-CIV-ANG-01",
+    name: "Angelica",
+    alias: "Dogtown node contact—low profile, high awareness.",
+    faction: "Unaffiliated",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/angelica.webp",
+    bio: "Knows which doors open and which ones get you killed for trying.",
+    notes: "Profile flags strong situational awareness and avoidance behavior. Subject is useful for intel, not loyalty."
+  },
+
+  aurore_cassel: {
+    id: "DGT-FXR-AUR-02",
+    name: "Aurore Cassel",
+    alias: "Black-market broker with a taste for expensive chaos.",
+    faction: "Independent",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/aurore.png",
+    bio: "Sells access, sells secrets, sells the illusion that you’re in control.",
+    notes: "Profile flags high manipulation skill and high betrayal probability. Keep deals short and payments verified."
+  },
+
+  barbara: {
+    id: "DGT-CIV-BRB-03",
+    name: "Barbara",
+    alias: "Dogtown civilian asset / background operator.",
+    faction: "Unaffiliated",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/barbara.png",
+    bio: "A name that shows up where it shouldn’t. That’s usually a clue.",
+    notes: "Profile flags low visibility, high information proximity. Treat as possible relay for larger actors."
+  },
+
+  bree: {
+    id: "DGT-CIV-BRE-04",
+    name: "Bree",
+    alias: "Dogtown local; survives by reading people fast.",
+    faction: "Unaffiliated",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/bree.png",
+    bio: "Dogtown doesn’t reward the strong—it rewards the quick.",
+    notes: "Profile flags high adaptability and low trust baseline. Subject responds best to clear incentives and exit routes."
+  },
+
+  farida: {
+    id: "DGT-CIV-FRD-05",
+    name: "Farida",
+    alias: "Dogtown civilian contact; caught in operational spillover.",
+    faction: "Unaffiliated",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/farida.png",
+    bio: "Lives too close to the fire. Knows what happens when the wind changes.",
+    notes: "Profile flags stress exposure and threat sensitivity. Subject may be leveraged by hostile forces."
+  },
+
+  lina_malina: {
+    id: "DGT-MED-LNM-06",
+    name: "Lina Malina",
+    alias: "Media persona / controlled narrative vector.",
+    faction: "Media",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/lina.png",
+    bio: "In Dogtown, the story is a weapon. Lina knows who’s holding the trigger.",
+    notes: "Profile flags attention economy leverage and rumor propagation risk. Subject can amplify ops—or destroy them."
+  },
+
+  emeric: {
+    id: "DGT-BGH-EMR-07",
+    name: "Emeric",
+    alias: "Barghest enforcer; keeps order with fear and muscle.",
+    faction: "Barghest",
+    region: "Dogtown",
+    type: "Phantom Liberty",
+    image: "media/characters/pl/emeric.png",
+    bio: "A uniform without the law. A threat without the paperwork.",
+    notes: "Profile flags high violence readiness and pack loyalty. Subject is predictable: strength respected, weakness punished."
+  },
+
+    };
+
+    function getCharacterIdFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("char");
+      return id ? id.toLowerCase() : null;
+    }
+
+    function loadCharacter(charKey) {
+      const data = CHARACTER_DATA[charKey];
+
+      const nameEl = document.getElementById("bio-name");
+      const aliasEl = document.getElementById("bio-alias");
+      const factionEl = document.getElementById("bio-faction");
+      const regionEl = document.getElementById("bio-region");
+      const typeEl = document.getElementById("bio-type");
+      const imgEl = document.getElementById("bio-image");
+      const textEl = document.getElementById("bio-text");
+      const notesEl = document.getElementById("bio-notes");
+      const fileIdEl = document.getElementById("bio-file-id");
+
+      if (!data) {
+        nameEl.textContent = "UNKNOWN SUBJECT";
+        aliasEl.textContent = "NO MATCH IN ORION CHARACTER ARCHIVE";
+        factionEl.textContent = "UNIDENTIFIED";
+        regionEl.textContent = "UNKNOWN";
+        typeEl.textContent = "N/A";
+        imgEl.src = "media/characters/placeholder.png"; // optional placeholder you can add
+        imgEl.alt = "Unknown character";
+        textEl.textContent =
+          "Requested subject ID returned no dossier. Either this record is classified beyond this node's clearance, or the archive has not yet been synchronized.";
+        notesEl.textContent = "Try accessing this profile again after the next ORION sync cycle.";
+        fileIdEl.textContent = "FILE: NC-????-???";
+        return;
+      }
+
+      nameEl.textContent = data.name;
+      aliasEl.textContent = data.alias;
+      factionEl.textContent = data.faction;
+      regionEl.textContent = data.region;
+      typeEl.textContent = data.type;
+      imgEl.src = data.image;
+      imgEl.alt = data.name + " portrait";
+      textEl.textContent = data.bio;
+      notesEl.textContent = data.notes;
+      fileIdEl.textContent = "FILE: " + data.id;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const id = getCharacterIdFromUrl() || "panam"; // default
+      loadCharacter(id);
+
+      const closeBtn = document.getElementById("bio-close-btn");
+      closeBtn.addEventListener("click", () => {
+        window.location.href = "characters.html";
+      });
+
+      // ESC to close
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          window.location.href = "characters.html";
+        }
+      });
+    });
+  </script>
+
+
+<script src="intrusion.js"></script>
+
+
+
+<script>
+  // Any link that goes to index.html will set "skip boot" for the next index visit
+  document.querySelectorAll('a[href$="index.html"], a[href*="index.html#"], a[href*="index.html?"]').forEach(a => {
+    a.addEventListener("click", () => {
+      sessionStorage.setItem("orion_skip_boot", "1");
+    });
+  });
+</script>
+
+
+<!--  
+LUCY: "Don’t dig too deep into the Source.  
+That's where the ghosts live."  
+If you're still scrolling… you’re braver than most.  
+Or dumber.  
+-->
+
+
+
+<!--
+
+
+⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀
+⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀
+⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀
+⠀⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⠀⠀
+⠀⣿⣿⣿⣿⣿⣿⣿⣷⢿⣿⣿⣿⣿⣿⣿⣿⣿⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀
+⢀⣿⠘⣿⡿⣿⣿⣿⣿⡎⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣿⣿⣿⣿⣿⣿⡇⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀
+⠈⣿⠀⢿⣿⢹⣻⣿⣯⣿⡄⢻⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡞⣿⣿⣿⡄
+⠀⣿⡄⠘⣿⡇⢿⣿⡿⡜⢿⣀⣹⣯⠿⠟⠛⠋⠁⠉⠉⠉⠈⠀⢿⣿⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢻⣿⣿⣧
+⠀⢿⣇⠀⠹⠿⠌⠋⠋⠉⠉⠉⠁⠀⣀⣠⡤⠶⢶⣶⣶⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⣿⣿⣿
+⠀⠀⢻⡤⠖⣒⣢⣄⠀⠀⠀⠀⠀⠀⠀⡟⠀⠀⠈⢿⠓⣻⡿⠋⠀⣿⣿⣿⣿⣿⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢻⣿⡟
+⠀⠀⠀⢹⣌⣠⠶⣾⣷⡄⠀⠀⠀⠀⠀⠀⠀⢀⢀⣀⣽⠋⠀⠀⠀⢹⣿⣿⣿⣿⣿⡇⣿⣿⣿⣿⣿⣿⣿⣿⣟⣿⣿⣿⣿⣿⠿⠋⠀
+⠀⠀⠀⢸⣿⣿⡄⠘⠭⡇⠀⠀⠀⠀⠀⠀⠀⠈⠻⠛⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⡇⢸⣿⣿⣿⣿⣿⣿⣿⣷⢿⣿⣿⣿⠟⠀⠀⠀
+⠀⠀⠀⢸⣿⣿⡍⠳⢾⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣧⢸⣿⣿⣿⣿⣿⣿⣿⣿⠸⢛⠟⠁⠀⠀⠀⠀
+⠀⠀⠀⢸⣿⣿⣇⢀⠊⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⣿⣿⢿⠔⠁⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠨⣿⣿⣿⡌⣷⣄⠠⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⢸⣿⣿⣿⣿⣿⠿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣿⣿⣇⠹⡌⠉⠁⠀⠀⠀⠀⣀⡤⢤⣴⡶⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⠋⣾⢹⣿⣿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣿⣿⣯⠀⠹⣄⠀⠀⠰⣯⣵⢟⣋⣽⡋⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⠀⣿⠸⠟⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⣿⣿⠀⠀⠙⢦⡀⠀⠈⠿⠿⠿⠛⠁⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⡿⠀⠉⠀⠀⠘⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⣿⣿⠀⠀⠀⢸⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠴⠋⠀⣿⣿⣿⡇⠀⠀⣀⣠⣤⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⣿⣿⡀⠀⠀⠀⢻⣿⣿⣄⠀⠀⠀⠀⠀⣀⣴⠛⠁⠀⠀⠀⣿⣿⣿⣷⣶⠿⠛⠋⠉⠘⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠸⣿⣿⣿⣦⣀⣠⣴⡟⠋⢹⠀⠀⣀⣠⡴⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+
+-->
+
+
+
+</body>
+</html>

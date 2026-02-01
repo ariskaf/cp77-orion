@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="description" content="Cyberpunk 2077 Fan Support Node — faction-based terminal." />
+  <title>ORION Support Node // Faction Terminal</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body class="support-body" oncontextmenu="return false;">
+
+  <!-- Global neural overlay (if you already use it) -->
+  <div class="neural-noise-overlay"></div>
+
+  <header>
+    <div class="logo">CP2077 • SUPPORT NODE</div>
+    <nav class="nav">
+      
+      <button class="btn support-change-alliance" type="button" id="change-alliance-btn">
+        Change Alliance
+      </button>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ========== ALLIANCE SELECTOR ========== -->
+    <section class="card support-selector" id="support-selector">
+      <h1 class="support-select-title">What&apos;s your alliance?</h1>
+      <p class="subtitle support-select-sub">
+        Choose the group you represent. The support terminal will adapt its interface to your faction.
+      </p>
+
+      <div class="support-faction-grid">
+        <!-- Arasaka -->
+        <button class="support-faction-card" data-alliance="arasaka">
+          <div class="support-faction-logo-wrap arasaka">
+            <img src="media/logos/arasaka_logo.png" alt="Arasaka logo">
+          </div>
+          <div class="support-faction-meta">
+            <span class="support-faction-name">Arasaka</span>
+            <span class="support-faction-tagline">Corporate Security / Black Ops</span>
+          </div>
+        </button>
+
+        <!-- NCPD -->
+        <button class="support-faction-card" data-alliance="ncpd">
+          <div class="support-faction-logo-wrap ncpd">
+            <img src="media/logos/ncpd_logo.png" alt="NCPD logo">
+          </div>
+          <div class="support-faction-meta">
+            <span class="support-faction-name">NCPD</span>
+            <span class="support-faction-tagline">Night City Police Department</span>
+          </div>
+        </button>
+
+        <!-- NUSA -->
+        <button class="support-faction-card" data-alliance="nusa">
+          <div class="support-faction-logo-wrap nusa">
+            <img src="media/logos/nusa_logo.png" alt="NUSA logo">
+          </div>
+          <div class="support-faction-meta">
+            <span class="support-faction-name">NUSA</span>
+            <span class="support-faction-tagline">Federal Command / Intelligence</span>
+          </div>
+        </button>
+
+        <!-- Trauma Team -->
+        <button class="support-faction-card" data-alliance="trauma">
+          <div class="support-faction-logo-wrap trauma">
+            <img src="media/logos/trauma_logo.png" alt="Trauma Team logo">
+          </div>
+          <div class="support-faction-meta">
+            <span class="support-faction-name">Trauma Team</span>
+            <span class="support-faction-tagline">Premium Medical Response</span>
+          </div>
+        </button>
+
+        <!-- Edgerunner -->
+        <button class="support-faction-card" data-alliance="edgerunner">
+          <div class="support-faction-logo-wrap edgerunner">
+            <img src="media/logos/edgerunner_logo.png" alt="Edgerunner logo">
+          </div>
+          <div class="support-faction-meta">
+            <span class="support-faction-name">Edgerunner</span>
+            <span class="support-faction-tagline">Freelance Merc / Netrunner</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========== SUPPORT TERMINAL ========== -->
+    <section class="card support-terminal" id="support-terminal">
+      <div class="support-terminal-header">
+        <div class="support-terminal-left">
+          <div class="support-terminal-logo-frame">
+            <img id="support-logo" src="media/logos/arasaka_logo.png" alt="Alliance logo">
+          </div>
+          <div>
+            <h2 class="support-terminal-title" id="support-alliance-name">
+              ORION // Support Node
+            </h2>
+            <p class="support-terminal-sub" id="support-alliance-sub">
+              Select an alliance to initialize this terminal.
+            </p>
+          </div>
+        </div>
+        <div class="support-terminal-right">
+          <span class="support-terminal-badge" id="support-alliance-badge">
+            Alliance: None Selected
+          </span>
+        </div>
+      </div>
+
+      <div class="support-terminal-body">
+        <!-- left column: quick options -->
+        <div class="support-quick-panel">
+          <h3 class="support-section-heading">Request Type</h3>
+          <ul class="support-quick-list">
+            <li data-type="bug" class="active">Bug / Site Issue</li>
+            <li data-type="feature">Feature Request</li>
+            <li data-type="lore">Lore / Info Question</li>
+            <li data-type="legal">DMCA / Copyright</li>
+            <li data-type="other">Other</li>
+          </ul>
+
+          <div class="support-info-block" id="support-info-block">
+            Use the panel on the right to submit a report.
+            This is a fan-made node and does not contact CD PROJEKT RED.
+          </div>
+        </div>
+
+        <!-- right column: form -->
+        <form class="support-form" id="support-form">
+          <h3 class="support-section-heading">Submit transmission</h3>
+
+          <div class="support-field">
+            <label for="support-subject">Subject</label>
+            <input type="text" id="support-subject" required
+                   placeholder="Short summary of your issue or request">
+          </div>
+
+          <div class="support-field support-field-inline">
+            <div>
+              <label for="support-type">Category</label>
+              <select id="support-type">
+                <option value="bug">Bug / Site Issue</option>
+                <option value="feature">Feature Request</option>
+                <option value="lore">Lore / Info Question</option>
+                <option value="legal">DMCA / Copyright</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="support-severity">Priority</label>
+              <select id="support-severity">
+                <option value="low">Low</option>
+                <option value="normal" selected>Normal</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="support-field">
+            <label for="support-details">Details</label>
+            <textarea id="support-details" rows="6" required
+                      placeholder="Describe what happened, what you expected, and any details (browser, platform, steps)."></textarea>
+          </div>
+
+          <div class="support-field">
+            <label for="support-contact">Optional contact</label>
+            <input type="text" id="support-contact"
+                   placeholder="Discord / email / handle (optional)">
+          </div>
+
+          <button type="submit" class="btn support-submit-btn">
+            Generate Support Ticket
+          </button>
+
+          <p class="support-ticket-status" id="support-ticket-status"></p>
+
+          <!-- CP77-style diagnostic console -->
+          <div class="support-console" id="support-console">
+            <div class="support-console-header">ORION DIAGNOSTIC LOG</div>
+            <pre class="support-console-log" id="support-console-log"></pre>
+            <div class="support-console-prompt">&gt; <span id="support-console-cursor">_</span></div>
+          </div>
+
+        </form>
+      </div>
+
+      <p class="support-footer-note">
+        Transmissions are stored locally. External uplink can be enabled later.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="card">
+    <small>Built as a single-file static support node. No tracking, no backend, just style.</small>
+  </footer>
+
+  <!-- ========== GLITCH INTRO OVERLAY ========== -->
+  <div class="support-glitch-overlay" id="support-glitch-overlay">
+    <div class="support-glitch-box">
+      <span class="sg-title">Alliance link verified</span>
+      <span class="sg-line">Initializing ORION support node...</span>
+      <span class="sg-line">Routing through ICE-safe channel...</span>
+    </div>
+  </div>
+
+  <script>
+  const ALLIANCES = {
+    arasaka: {
+      name: "Arasaka Incident Desk",
+      badge: "Alliance: Arasaka",
+      sub: "Corporate security incident reporting terminal. Handle data with discretion.",
+      logo: "media/logos/arasaka_logo.png"
+    },
+    ncpd: {
+      name: "NCPD Support Desk",
+      badge: "Alliance: NCPD",
+      sub: "Night City Police Dept. internal reporting console. Citizens may submit tips and issues.",
+      logo: "media/logos/ncpd_logo.png"
+    },
+    nusa: {
+      name: "NUSA Command Uplink",
+      badge: "Alliance: NUSA",
+      sub: "Federal operations & intelligence support node. For authorized personnel only.",
+      logo: "media/logos/nusa_logo.png"
+    },
+    trauma: {
+      name: "Trauma Team Client Portal",
+      badge: "Alliance: Trauma Team",
+      sub: "Emergency response & client experience feedback terminal.",
+      logo: "media/logos/trauma_logo.png"
+    },
+    edgerunner: {
+      name: "Edgerunner Signal Board",
+      badge: "Alliance: Edgerunner",
+      sub: "Unofficial channel for mercs, netrunners and gonks trying to stay alive in Night City.",
+      logo: "media/logos/edgerunner_logo.png"
+    }
+  };
+
+  const TYPE_DESCRIPTIONS = {
+    bug: "Report visual glitches, broken links, typos, layout problems or anything that feels off in the node.",
+    feature: "Suggest new features, sections, visual ideas or improvements you’d like to see.",
+    lore: "Ask questions about Cyberpunk 2077, Phantom Liberty, characters, or in-universe details.",
+    legal: "Use this for DMCA, copyright or removal requests. This is still fan-maintained and not official.",
+    other: "Anything that doesn’t fit the other categories. Be as clear as you can."
+  };
+
+  const selectorEl = document.getElementById("support-selector");
+  const terminalEl = document.getElementById("support-terminal");
+  const changeAllianceBtn = document.getElementById("change-alliance-btn");
+  const glitchOverlay = document.getElementById("support-glitch-overlay");
+
+  const consoleLogEl = document.getElementById("support-console-log");
+  const consoleCursorEl = document.getElementById("support-console-cursor");
+
+  const form = document.getElementById("support-form");
+  const statusEl = document.getElementById("support-ticket-status");
+
+  const subjectEl = document.getElementById("support-subject");
+  const typeSelect = document.getElementById("support-type");
+  const severityEl = document.getElementById("support-severity");
+  const detailsEl = document.getElementById("support-details");
+  const contactEl = document.getElementById("support-contact");
+
+  function logLine(text) {
+    if (!consoleLogEl) return;
+    const existing = consoleLogEl.textContent.trim();
+    consoleLogEl.textContent = (existing ? existing + "\n" : "") + text;
+    consoleLogEl.scrollTop = consoleLogEl.scrollHeight;
+  }
+
+  function blinkCursor() {
+    if (!consoleCursorEl) return;
+    consoleCursorEl.classList.add("blink");
+  }
+  blinkCursor();
+
+  function showGlitchOverlay() {
+    if (!glitchOverlay) return;
+    glitchOverlay.classList.add("open");
+    setTimeout(() => glitchOverlay.classList.remove("open"), 900);
+  }
+
+  function applyAlliance(key) {
+    const config = ALLIANCES[key];
+    if (!config) return;
+
+    document.body.dataset.alliance = key;
+    localStorage.setItem("orionSupportAlliance", key);
+
+    document.getElementById("support-logo").src = config.logo;
+    document.getElementById("support-alliance-name").textContent = config.name;
+    document.getElementById("support-alliance-sub").textContent = config.sub;
+    document.getElementById("support-alliance-badge").textContent = config.badge;
+
+    selectorEl.classList.add("hidden");
+    terminalEl.classList.add("visible");
+
+    showGlitchOverlay();
+
+    logLine("[LINK] Alliance channel established: " + config.badge);
+    logLine("[CHK]  ICE lattice........................OK");
+    logLine("[INFO] Support node ready for input.");
+  }
+
+  function resetAlliance() {
+    delete document.body.dataset.alliance;
+    localStorage.removeItem("orionSupportAlliance");
+    selectorEl.classList.remove("hidden");
+    terminalEl.classList.remove("visible");
+    logLine("[WARN] Alliance link dropped.");
+  }
+
+  function setStatus(text, kind) {
+    if (!statusEl) return;
+    statusEl.classList.remove("ok", "err");
+    if (kind) statusEl.classList.add(kind);
+    statusEl.textContent = text || "";
+  }
+
+  function markFieldError(el, on) {
+    const wrap = el?.closest?.(".support-field");
+    if (!wrap) return;
+    wrap.classList.toggle("is-error", !!on);
+  }
+
+  function safeTrim(v) {
+    return (v || "").toString().trim();
+  }
+
+  function makeTicketId(allianceKey) {
+    const stamp = new Date();
+    const yy = String(stamp.getFullYear()).slice(-2);
+    const mm = String(stamp.getMonth() + 1).padStart(2, "0");
+    const dd = String(stamp.getDate()).padStart(2, "0");
+    const rnd = Math.random().toString(36).toUpperCase().slice(2, 6);
+    return `${allianceKey.toUpperCase()}-${yy}${mm}${dd}-${rnd}`;
+  }
+
+  function rateLimited() {
+    const key = "orionSupportLastSubmit";
+    const last = Number(localStorage.getItem(key) || "0");
+    const now = Date.now();
+    const cooldown = 60 * 1000; // 60s
+    if (now - last < cooldown) return true;
+    localStorage.setItem(key, String(now));
+    return false;
+  }
+
+  function persistTicket(ticket) {
+    const key = "orionSupportTickets";
+    const arr = JSON.parse(localStorage.getItem(key) || "[]");
+    arr.unshift(ticket);
+    localStorage.setItem(key, JSON.stringify(arr.slice(0, 10)));
+  }
+
+  function syncQuickListWithSelect() {
+    const quickList = document.querySelector(".support-quick-list");
+    const infoBlock = document.getElementById("support-info-block");
+
+    if (!quickList || !typeSelect) return;
+
+    quickList.querySelectorAll("li").forEach(li => {
+      li.addEventListener("click", () => {
+        quickList.querySelectorAll("li").forEach(x => x.classList.remove("active"));
+        li.classList.add("active");
+        const type = li.dataset.type;
+        typeSelect.value = type;
+        infoBlock.textContent = TYPE_DESCRIPTIONS[type] || "";
+      });
+    });
+
+    typeSelect.addEventListener("change", () => {
+      const type = typeSelect.value;
+      const li = quickList.querySelector(`li[data-type="${type}"]`);
+      if (li) {
+        quickList.querySelectorAll("li").forEach(x => x.classList.remove("active"));
+        li.classList.add("active");
+      }
+      infoBlock.textContent = TYPE_DESCRIPTIONS[type] || "";
+    });
+
+    // init
+    const initType = typeSelect.value || "bug";
+    infoBlock.textContent = TYPE_DESCRIPTIONS[initType] || "";
+  }
+
+  // Add a honeypot (hidden field) without changing HTML
+  function injectHoneypot() {
+    if (!form) return;
+    const hp = document.createElement("input");
+    hp.type = "text";
+    hp.name = "company";
+    hp.id = "support-hp";
+    hp.autocomplete = "off";
+    hp.tabIndex = -1;
+    hp.style.position = "absolute";
+    hp.style.left = "-9999px";
+    hp.style.opacity = "0";
+    form.appendChild(hp);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // clicks on faction cards
+    document.querySelectorAll(".support-faction-card").forEach(card => {
+      card.addEventListener("click", () => applyAlliance(card.dataset.alliance));
+    });
+
+    changeAllianceBtn?.addEventListener("click", resetAlliance);
+
+    // restore previous alliance
+    const stored = localStorage.getItem("orionSupportAlliance");
+    if (stored && ALLIANCES[stored]) applyAlliance(stored);
+
+    // quicklist sync
+    syncQuickListWithSelect();
+
+    // honeypot
+    injectHoneypot();
+
+    // submit handler
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setStatus("", "");
+
+      const alliance = document.body.dataset.alliance;
+      if (!alliance) {
+        setStatus("Select an alliance first. Terminal not initialized.", "err");
+        logLine("[ERR] Alliance not selected. Aborting transmit.");
+        return;
+      }
+
+      // Honeypot check
+      const hpVal = safeTrim(document.getElementById("support-hp")?.value);
+      if (hpVal) {
+        setStatus("Transmission rejected.", "err");
+        logLine("[BLOCK] Bot signature detected. Dropping packet.");
+        return;
+      }
+
+      // Rate limit
+      if (rateLimited()) {
+        setStatus("Rate limit: wait 60 seconds before sending another transmission.", "err");
+        logLine("[WARN] Rate limit engaged. Cooldown active.");
+        return;
+      }
+
+      // Validate
+      const subject = safeTrim(subjectEl.value);
+      const details = safeTrim(detailsEl.value);
+      const contact = safeTrim(contactEl.value);
+      const type = typeSelect.value;
+      const severity = severityEl.value;
+
+      markFieldError(subjectEl, subject.length < 3);
+      markFieldError(detailsEl, details.length < 10);
+
+      if (subject.length < 3 || details.length < 10) {
+        setStatus("Fix highlighted fields (subject ≥ 3 chars, details ≥ 10 chars).", "err");
+        logLine("[ERR] Validation failed. Missing required intel.");
+        return;
+      }
+
+      const ticketId = makeTicketId(alliance);
+
+      // UI lock
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) btn.disabled = true;
+
+      logLine("[SEND] Preparing transmission payload...");
+      logLine("[ENC]  Applying ICE-safe wrapper.........OK");
+      logLine("[UPL]  Routing via ORION relay...........OK");
+
+      // “Static working” = store locally + provide fallback actions
+      const ticket = {
+        id: ticketId,
+        ts: Date.now(),
+        alliance,
+        type,
+        severity,
+        subject,
+        details,
+        contact
+      };
+      persistTicket(ticket);
+
+      // Copy ticket to clipboard (best effort)
+      try {
+        await navigator.clipboard.writeText(ticketId);
+        logLine("[INFO] Ticket ID copied to clipboard.");
+      } catch {
+        logLine("[INFO] Clipboard blocked (browser policy).");
+      }
+
+      // Mailto fallback prepared (no server yet)
+      const mailto = `mailto:?subject=${encodeURIComponent("ORION Support Ticket " + ticketId + " — " + subject)}&body=${encodeURIComponent(
+        "Ticket: " + ticketId +
+        "\nAlliance: " + alliance +
+        "\nCategory: " + type +
+        "\nPriority: " + severity +
+        "\nContact: " + (contact || "(none)") +
+        "\n\nDetails:\n" + details
+      )}`;
+
+      setStatus(
+        `Ticket ${ticketId} generated. (Copied to clipboard if allowed.) You can also send it via your email client.`,
+        "ok"
+      );
+      logLine("[TICKET] " + ticketId + " committed to local archive.");
+      logLine("[NOTE] No backend connected. Using local buffer only.");
+
+      // Add a clickable link in the status (safe HTML)
+      const link = document.createElement("a");
+      link.href = mailto;
+      link.textContent = "Open email client →";
+      link.style.display = "inline-block";
+      link.style.marginLeft = "8px";
+      link.style.color = "var(--support-accent-strong)";
+      link.style.textDecoration = "none";
+      statusEl.appendChild(link);
+
+      // unlock
+      if (btn) btn.disabled = false;
+    });
+  });
+</script>
+
+
+
+<script src="intrusion.js"></script>
+
+
+
+<script>
+  // Any link that goes to index.html will set "skip boot" for the next index visit
+  document.querySelectorAll('a[href$="index.html"], a[href*="index.html#"], a[href*="index.html?"]').forEach(a => {
+    a.addEventListener("click", () => {
+      sessionStorage.setItem("orion_skip_boot", "1");
+    });
+  });
+</script>
+
+
+<!--  
+ORION OBSERVER ONLINE  
+Your cursor movement has been classified as “curious”.  
+Continue. The Archive enjoys being inspected.  
+-->
+
+
+
+
+<!--
+
+
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⡤⠤⢶⣶⣶⡶⠶⠒⣒⣶⠶⠶⣶⣤⣤⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣾⠟⠛⠶⣤⣄⡀⠀⠀⠀⢀⣠⣴⣖⣿⣽⠶⠞⠛⠉⠉⠉⠉⠉⠛⠛⠲⠦⣄⣀⡀⠉⠙⠻⢽⣓⠦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣶⡾⠟⠛⠋⠁⠀⠀⠀⠈⠛⠻⣶⣴⣾⣿⠿⣿⡟⠉⠀⠀⢀⡴⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠛⠶⣤⣀⠈⠙⠶⣝⠳⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⠇⠀⠀⠀⢀⡀⠀⠀⠀⢀⣴⣾⣿⡿⠋⣠⣾⣋⣀⣴⣿⣿⠯⠥⠤⠤⣤⣀⣀⣀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠉⠛⢦⣄⠈⠙⢦⣉⠳⣤⡀⠀⣀⡤⠴⣒⣶⠶⠿⠿⠶⣦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡿⠟⠀⠀⠀⣠⡿⠁⠀⢀⣴⣿⣿⣿⣏⣠⡴⠿⠛⠋⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⠒⣶⢤⣄⡀⠀⠀⠀⠀⠀⠈⠳⢦⡀⠙⠷⣼⡿⢚⣥⠶⠋⠉⠀⠀⠀⠙⠧⠀⠹⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠃⠀⠀⢠⣾⠁⡇⢀⣴⣿⣿⣿⣿⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠤⠤⠤⠤⠬⠯⠤⢭⣷⣦⣄⠀⠀⠀⠀⠀⠙⢦⣾⣿⡾⠋⠀⣀⣠⣄⠀⠀⠀⠀⠀⠀⠀⠘⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡿⠀⠀⣰⣿⣿⣹⣷⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠻⣿⣦⣄⠀⠀⠀⠀⢙⣿⣅⠀⠀⢘⣼⣿⣆⠀⠀⠀⠀⠀⠀⠀⠘⢧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠃⢀⣼⣿⣿⣿⣿⣿⣿⣿⠟⠒⠚⠛⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣷⢦⡀⠀⣾⠂⣹⣶⡺⠯⣼⡉⢿⣆⠀⠀⠀⠀⠀⠀⠀⠘⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢂⣾⡿⠛⠛⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢧⡙⢾⣷⣴⡿⠏⠁⣽⣿⣷⡈⢻⡇⠀⠀⠀⠀⠀⠀⠀⢹⡀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣇⠀⠀⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠳⣌⢻⡟⠶⢆⣼⣿⣿⣿⣷⡀⣇⠀⠀⠀⠀⠀⠀⠀⠘⣇⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣆⣸⡟⠁⠀⠀⣴⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⢉⡟⠛⠿⠋⢸⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⣻⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣏⣏⡿⠀⠀⠀⣼⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠲⢤⡀⠀⠀⠀⠀⠙⣆⠀⠀⠀⠀⠀⠀⠀⠀⢠⡇⡾⢠⡾⠃⢠⣿⣿⣿⣿⣧⣿⠀⠀⠀⠀⠀⠀⠀⠀⣿⡄⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⡾⠁⠀⠀⣸⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⣄⡀⠀⠀⠘⣆⠀⠀⠀⠀⠀⠀⠀⣞⣼⠁⣼⣇⢀⣾⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠘⡇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⠃⠀⠀⢠⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢦⡀⠀⠘⣆⠀⠀⠀⠀⠀⢸⣿⡟⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⡯⠀⠀⠀⡾⠁⠀⠀⠀⠀⡾⠟⢷⣄⠀⠀⣰⠟⠁⠈⠙⠻⢦⡀⠀⠀⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⢾⡆⠘⣆⠀⠀⠀⠀⠀⢻⡟⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⣷⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⠅⠀⠀⢠⡏⠀⠀⠀⠀⢸⠃⠀⠀⢙⣷⣀⣿⣴⣾⣤⣄⣀⡀⠙⢧⡀⠘⣆⠀⠀⠀⠀⠀⠀⠀⠀⠸⡄⠹⣦⠹⡄⠀⠀⠀⠀⠀⠹⢿⠿⠿⠛⣿⣩⠟⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⣿⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡟⠀⠀⠀⢸⠁⠀⠀⠀⠀⡾⣀⡴⠚⠋⠉⠉⠉⠀⠀⠀⠈⠉⠻⣦⣄⠹⣦⡘⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢳⣿⡄⠀⠀⠀⠀⠀⠘⣧⠀⠀⢸⣿⡋⠁⣙⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢨⠛⡗⠀⠀⠀⢸⠀⠀⠀⠀⢠⡟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣟⢾⣷⡄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣷⠀⠀⠀⠀⠀⠀⠸⡆⠀⠀⣿⢿⣶⠛⠋⣹⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⢻⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣀⣤⣤⣤⣤⣤⣀⣀⡀⠀⠀⠀⢀⣀⣀⣀⠸⢰⠇⠀⠀⠀⢸⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢷⡈⠻⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡏⡇⠀⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⠘⡇⠀⠀⠀⠀⠀
+⠀⠀⠀⢰⡇⠀⠀⠀⠀⠀⠀⠈⠉⠙⠛⠋⠉⠉⠀⢉⡟⢻⡄⠀⠀⠀⢸⠆⠀⠀⠀⡿⠛⠛⠒⠒⠶⢶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⣶⡾⢿⡖⠒⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⠛⠀⠀⠀⠀⠀⠀⠀⠀⣿⢻⡆⢳⠀⠀⠀⠀⠀
+⠀⠀⠀⣼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠃⢸⡇⠀⠀⠀⢸⡇⠀⠀⢠⣇⠀⠀⠀⠀⠀⠀⠈⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠀⠈⠳⡌⢻⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⡇⢸⢳⠸⡆⠀⠀⠀⠀
+⠀⠀⠀⣿⠀⠀⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⢸⣿⠀⠀⠀⢸⡇⡀⠀⣸⢯⠁⠀⠀⠀⠤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣹⣦⠿⡷⣄⢀⡀⠀⠀⠀⠀⠀⠀⠀⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⡆⠀⠀⠀⠀⠀⠀⠸⢀⡇⢸⠈⢧⣷⠀⠀⠀⠀
+⠀⠀⠀⣿⠀⠀⢻⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠀⠸⣿⠀⠀⠀⠀⡇⡄⢀⣏⣈⣧⠀⠀⠀⠀⠀⠙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⠃⠈⢧⡹⣞⠳⣽⣶⣄⡀⠀⠀⠀⠀⢹⣇⠀⠀⠀⠀⠀⠀⠀⡀⢸⣻⣦⢸⡇⠀⠀⠀⠀⠀⠀⢀⢸⠇⢸⡀⠘⣿⡆⠀⠀⠀
+⠀⠀⠀⠈⠀⠀⠈⢧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⠀⠀⣿⡄⠀⠀⠀⢿⢿⣿⣿⣿⣿⣿⣦⣄⠀⠀⠀⠈⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣳⣙⣷⣈⡿⢿⣿⣶⣄⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⡇⢸⣿⣿⣾⡇⠀⠀⠀⠀⠀⠀⡾⢸⠀⠘⡇⠀⢻⣧⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⠳⣶⣄⠀⠀⠀⠀⠀⢀⠀⠀⠸⡆⠀⢸⡇⠀⠀⠀⢸⣾⡿⡝⣿⣏⠉⢻⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⡿⣿⣿⣿⣿⣿⣦⡀⣿⡇⠀⠀⠀⠀⠀⠀⢻⢸⡟⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⡾⠀⠀⡇⠀⠀⢹⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠨⡌⠻⣝⣦⣄⠀⠀⠘⣆⠀⠀⢻⠀⠀⣿⠀⠀⠀⠀⣿⠀⢻⡿⣿⣆⠘⢻⡿⢿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⠾⢻⡿⠟⣿⡽⠛⠛⠿⣿⣎⢻⣯⣿⣿⠟⢿⡿⡇⠀⠀⠀⠀⠀⠀⢸⢸⠁⠀⣿⣀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⢿⠀⠀⠘⡇⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣆⠀⠙⠻⣷⣤⠀⠸⣆⠀⢸⠀⠀⢹⡆⠀⠀⠀⠸⡆⠈⢿⣮⡙⣧⣀⠻⢦⣈⣉⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠈⠁⠈⠳⣄⣀⣀⣀⣼⣿⣏⠉⠙⢲⡾⣥⣿⠀⠀⠀⠀⠀⠀⢸⢸⡀⠀⣾⣿⠀⢠⠀⠀⠀⠀⢠⠇⠀⠀⢸⠀⠀⠀⢷⠀⠀
+⠀⠀⠀⠀⡄⠀⠀⠀⠀⠀⠈⠃⠀⠀⠈⣿⣷⢦⡘⢦⠘⡇⠀⠸⣧⠀⠀⠀⠀⣿⡀⠈⢿⡿⠁⠙⠓⠶⠤⠥⠴⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠒⢲⣦⡤⠤⠾⠛⠉⠻⣦⣼⣿⣦⣄⡀⠘⢻⠀⠀⠀⠀⠀⠀⢸⣾⢷⡀⡟⣿⣦⢸⡀⠀⠀⠀⢸⠀⠀⠀⢸⠀⠀⠀⢸⡄⠀
+⠀⠀⠀⠀⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡌⠳⣝⡿⢿⣦⠀⠀⣿⡆⠀⠀⠀⠈⢷⠀⠈⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣏⢿⠙⠮⣝⣳⢺⠀⠀⠀⠀⠀⠀⢸⣿⠳⣽⡇⢿⢿⢦⡇⠀⠀⠀⣸⠀⠀⠀⢸⠀⠀⠀⠀⣇⠀
+⠀⠀⠀⠀⢸⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠉⠻⣯⠳⣤⣸⣷⠀⠀⠀⡀⠈⢧⡀⠸⣆⠀⠀⠀⠀⠀⠀⠀⢀⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢧⡀⠀⠈⢡⣾⡇⠀⠀⠀⠀⠀⢸⡿⡆⢰⣿⢸⣌⣯⢿⡀⠀⠀⡇⠀⠀⠀⢸⠀⠀⠀⠀⢻⠀
+⠀⠀⠀⠀⠀⢿⡀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠃⠀⠀⠀⠀⢸⣧⠈⠙⡟⣇⢀⠀⢻⡀⠈⢳⡀⠹⣄⠀⠀⠀⠰⣄⢀⣼⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢳⡀⣴⠟⢹⡇⠀⠀⠀⠀⠀⣸⡇⣧⢸⣿⣷⣿⣟⣿⡇⠀⠀⡇⠀⠀⠀⢸⠀⠀⠀⠀⢸⡆
+⠀⠀⠀⠀⠀⠘⣧⠀⠀⠀⠀⠀⠀⠀⠀⡟⠀⠀⠀⠀⠀⣸⠘⣧⠀⣷⢹⡜⣀⠈⣇⠀⠀⢻⡄⢙⣦⡀⠀⠀⠈⠛⠿⠆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⢀⣺⣿⠃⠀⣼⡁⠀⠀⠀⠀⠀⣿⡇⠈⠛⠿⠿⠿⠽⠿⠿⣦⡀⣇⠀⠀⠀⢸⠀⠀⠀⠀⠀⡇
+⠀⠀⠀⠀⠀⠀⠹⣆⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⠀⡿⣤⠘⣧⢸⡘⣷⣸⡄⢹⡀⠀⢺⢻⡘⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⢇⠀⢀⣴⡿⠛⢱⡄⣰⣿⠃⠀⠀⠀⠀⢸⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠙⣷⣿⡀⠀⠀⢸⠀⠀⠀⠀⢰⣧
+⠀⠀⠀⠀⠀⠀⠀⢻⡄⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⠀⢰⣷⢿⠀⠹⣾⡇⣏⢷⣷⡈⡇⠀⠘⡇⢳⣿⣿⠻⣝⡶⣄⡀⠀⠀⠀⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣻⣾⡿⠋⠀⠀⢸⣱⣿⡟⠀⠀⠀⠀⠀⡟⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⡇⠀⠀⣸⠀⠀⠀⠀⢸⣿
+⠀⠀⠀⠀⠀⠀⠀⠈⣷⠀⠀⠀⠀⠀⠀⣧⠀⠀⠀⠀⢸⠸⣾⡆⣰⣷⣧⣿⡌⢿⣧⢻⠀⠀⢷⡆⢻⣿⠀⠈⠳⣌⠙⠲⣄⡀⠸⣯⡿⠶⣄⠀⠀⠀⠀⠀⠀⢀⡴⠞⠛⠉⠀⠀⠀⠀⣼⣿⣻⠃⠀⢀⠀⠀⣸⠃⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⡀⠀⡿⠀⠀⠀⠀⠘⢻
+⠀⠀⠀⠀⠀⠀⠀⠀⠸⣇⠀⠀⠀⠀⠀⢻⡄⠀⠀⠀⢸⠀⣿⢳⣯⡇⢸⣿⢻⡈⣿⢸⡆⠀⢸⢿⠈⣿⠀⠀⠀⠈⠳⣄⠈⠙⠶⣄⠀⠀⠀⠀⠀⠀⢀⣠⠖⣋⣠⣤⠤⠀⡀⠀⠀⣰⣿⢡⠏⠀⠀⡾⠀⢰⡏⢁⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢷⣠⡇⠀⠀⠀⢰⢠⢸
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡆⠀⠀⠀⠀⠀⢹⣷⣦⣄⣘⡦⠁⣻⣽⣁⣸⣿⣸⣃⣿⣧⣧⠀⣼⠘⡇⣿⠀⠀⠀⠀⠀⠘⣆⠀⠀⠈⠛⢦⣄⣠⡴⠞⠋⠀⠈⠁⠀⠀⠀⠀⠀⣀⣼⡿⢉⡟⠀⠀⣼⠃⠀⡿⣀⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⠀⠀⠀⠀⢸⢸⢸
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⡄⠀⠀⠀⠀⠀⠈⠙⠂⠙⠷⣤⣿⣿⣿⣿⡟⢁⣤⣿⣿⣿⢠⣹⣧⣿⣿⠀⠀⠀⠀⠀⠀⠸⡆⠀⠲⠤⠶⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠞⣽⡿⠁⡼⠀⠀⠰⠃⢀⡼⢡⡿⣽⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⡇⠀⠀⠀⣼⣿⢸
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢷⠀⠀⠀⠀⠀⠀⠀⠀⠰⡶⢾⣿⣿⡿⣿⡗⢛⣿⡿⢩⡇⣼⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⣁⣼⡿⠁⣸⠃⠀⠀⠀⣠⣿⢣⣿⢣⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⠀⣯⡏⡿
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣧⡀⠀⠀⠀⠀⠀⠀⠀⢻⢾⣿⣿⢡⣾⣴⢿⣿⡵⣿⠿⣱⣿⣻⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡿⣱⣾⡿⠁⢰⠇⠀⠀⠀⡴⢣⣯⢿⡏⣼⡇⠀⠀⢠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣷⡄⠀⢠⣿⡇⡇
+⠀⠀⠀⠀⣰⣦⡄⠀⣷⣿⣦⣾⣿⣷⡀⠀⠀⠀⠀⠀⠀⢠⡞⢻⣷⣿⡯⠶⠛⠀⠀⠀⠀⠻⣿⣿⣥⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⠟⢰⢻⣿⠁⢀⡟⠀⢠⡆⠘⢁⡟⣩⠏⢠⣿⠁⠀⢀⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡟⠇⠀⣾⣿⢰⠇
+⠀⠀⠀⠀⠘⠻⠿⣿⣿⣿⣿⣿⣿⣿⣧⣀⣄⣤⡤⢾⣿⠋⠀⢸⡟⢉⣤⣴⣶⣶⣾⡷⠖⣻⠟⠁⠀⠉⠉⢛⢲⣶⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⡟⠀⡟⣿⣿⠀⣼⠁⢀⡞⠀⠀⡼⠉⠁⢠⣟⣿⣆⣠⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡇⠀⢰⣿⡟⡾⠀
+⢩⢠⣲⣴⡆⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⢸⢹⡀⠃⢸⣿⣿⣿⣿⣿⣿⢋⣴⣟⠁⠀⠀⠀⠀⠀⣸⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⢀⡖⠀⠀⠀⣸⣿⠀⢸⢳⣿⢿⢀⣇⠀⡾⢱⡇⢰⠃⢀⣴⢏⡾⣸⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⠁⢠⡟⡟⣸⠃⠀
+⠲⣵⣿⣿⣷⠀⠀⠐⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⢸⡌⣇⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣿⣿⣿⣿⠿⣿⣁⡉⠓⠶⣤⣀⠀⣠⢾⡇⠀⠀⡀⡟⡇⠀⡾⢸⡇⢸⣼⡇⣼⠃⢸⢁⡟⠚⠛⠳⠞⢁⣿⣠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠇⢀⡞⢰⢧⡏⠀⠀
+⠀⢻⣿⣿⣿⣷⣄⣀⣿⡟⣿⣿⣿⣿⣿⠃⠀⠀⠀⠈⣧⢹⡄⠀⢹⣿⣆⣎⠉⣟⠛⠛⠿⠟⠛⠛⠋⢉⡥⠴⢦⣀⠈⠉⠓⠶⢤⣈⠙⠓⠾⣷⡖⠿⣿⣶⣝⣀⠇⠸⡇⠀⣿⢣⣿⢀⣿⣸⠁⠀⠀⠀⠀⣼⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠏⢀⡾⠁⣿⡾⠀⠀⠀
+⠀⠀⠹⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⡏⠀⠀⠀⠀⠀⠹⣆⢻⡄⠀⢻⣿⣞⠦⢬⣙⣶⣤⣀⢀⡼⠳⣌⣛⣦⣤⣉⣳⣄⠀⠀⠀⣈⣙⣶⢴⣿⣿⣦⣻⡝⢿⣿⡿⣶⣿⣦⣿⣾⡏⠘⢿⣇⣀⣤⣤⣴⣶⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠏⢠⡾⠁⢸⣿⠃⠀⠀⠀
+⠀⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⠀⠀⠀⠀⠀⠀⠹⣦⣻⣄⠀⠻⣿⣦⠀⠀⠀⢴⣚⣩⣄⡀⠀⠀⣉⡽⢗⡤⢾⡄⣿⣯⣥⣸⣼⡆⠹⣿⣿⣿⣿⣦⠉⠙⠙⠿⣿⣿⣿⣧⠀⢸⣿⣿⣿⣿⣿⣿⣏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡟⣠⡿⠁⠀⣿⠃⠀⠀⠀⠀
+⠀⠀⠀⠀⠈⠻⠿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣦⡀⠙⣿⣷⡄⠀⠀⠀⠀⠀⠉⢛⣫⣵⠚⠉⠀⠈⣷⣇⠉⠉⠉⢳⡀⠀⠹⣿⣿⣿⣿⣧⡀⢀⢀⣸⣿⠛⣿⣤⣿⣿⣿⣿⣿⣿⡟⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣰⠟⠀⠀⣼⠏⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣷⣄⠈⣿⣿⣆⠀⠀⠀⠀⠀⠘⠉⢸⡆⠀⠀⢀⣼⣿⣦⣀⣀⣈⢷⡀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⡀⣾⣿⣿⣿⣿⣿⡿⢻⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡿⠃⠀⠀⣼⡟⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣦⣸⣿⣿⡀⠀⠀⠀⠀⠀⠀⢠⠇⠀⣴⠞⠙⣿⠆⠀⠀⣘⠷⡽⠰⣦⣤⣉⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁⠀⣸⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⡏⠀⠀⢀⡾⣿⠁⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⣄⣏⣠⣦⡇⠀⠀⠈⠀⠀⠒⠓⠒⠒⠒⢚⣻⣿⣿⣿⡿⢻⠛⠿⣿⠿⡿⣻⠍⠀⠀⠀⠀⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣼⠁⠀⣠⠞⣰⠇⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣶⣄⣀⠀⠀⣟⠙⢿⣏⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣾⣿⣿⣿⡿⠟⠁⢸⡄⠀⢸⣸⢱⠏⠀⠀⠀⢀⣤⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡼⣽⠃⢀⡴⠋⢰⠏⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠰⣤⣀⠀⠙⢿⣿⣿⣿⣿⣿⣶⣾⣿⣛⣉⠀⠀⠀⠀⢀⣴⣿⣿⣭⣾⣿⡿⠟⠉⠀⠀⠀⢸⡇⠀⠸⡞⠿⠀⠀⢀⡴⠋⢀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠒⠒⠚⠷⣯⣴⠟⠀⢠⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠶⢤⣝⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣿⣿⠿⠛⠋⠁⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⠹⡄⠀⡴⣯⣀⠀⡞⣽⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢶⣴⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢉⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⡇⡾⠉⠛⠉⣸⢁⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣟⢧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡾⣿⣿⣿⣿⣿⣿⣿⣿⡟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠀⠀⠀⠀⣿⣧⡀⠀⢀⡏⡞⣧⠀⠀⠀⠀⠀⢀⣠⠤⠤⠤⢤⣤⣤⣤⡴⠤⠤⠽⠷⠦⣄⡀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣆⡙⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡾⣽⣿⣿⣿⣿⣿⣿⣿⣿⣇⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡟⠀⠀⠀⠀⢸⡌⠙⢦⣸⠁⡇⠙⢿⡳⣤⣠⠶⡋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠳⣄⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⡝⠦⣝⡲⢤⣀⠀⠀⠀⠀⠀⠀⣀⣀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠇⠀⠀⠀⠀⠀⢷⣀⣸⢹⢀⡇⠀⣀⣽⠞⠁⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⡄⠈⠙⠲⢤⠀⠀⠀⠀⣀⣟⣩⢴⣿⠏⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡾⠀⠀⠀⠀⠀⠀⠀⠉⠁⠐⠋⠀⣸⣯⣀⣀⣤⠶⣟⣳⣶⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠁⠀⠀⣾⡟⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣞⣿⣿⠟⢀⣠⣤⠞⣻⡿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⠁⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠀⠀⠀⠀⠀⠀⠀⠀⣠⡶⣿⣏⣾⣿⡇⣠⣟⣩⠴⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠁⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣷⡄⠀⠀⠀⠀⠀⠀⠀⢠⡇⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⡟⠀⠀⠀⠀⠀⢀⣴⠟⢱⢾⣯⣿⣿⣏⣿⠟⠋⠁⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⠟⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣿⣿⣿⣦⠀⠀⠀⠀⠀⠀⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⢠⡇⠀⠀⢀⣠⠾⠋⠀⠀⠀⣸⣡⣿⠿⠋⢀⣠⣤⣴⣶⣿⣿⣿⣿⠂⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⢀⡾⠁⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⡇⠀⠀⠀⠀⣰⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⢸⡇⠀⢠⡟⢁⡤⠖⠀⠀⠀⣻⠟⢁⣠⣶⢻⣿⣿⡟⡏⣿⣿⡿⠃⠀⠀⠀⣰⠏⠀⠀⠀⠀⠀⢠⠟⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⡇⠀⠀⠀⠀⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⢿⣿⣿⣿⣷⡄⠀⠀⠀⠀⢸⡄⢠⣿⠘⠉⠀⠀⠀⠀⠾⣥⡴⠋⢻⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀⢀⣴⠟⠁⠀⠀⣠⡾⠀⣰⠏⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣷⡀⠀⠀⠀⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⡆⠀⠀⠀⠈⡇⢸⣇⠀⠀⠀⠀⠀⠀⠀⠀⢻⡄⠀⠹⣿⣿⡿⠟⠋⠀⠀⢀⣴⣿⡟⠀⠀⢀⡼⠧⢄⣰⠃⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣷⡀⠀⠀⢸⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⠀⠀⠀⠀⡇⠀⢿⣄⠀⢀⣀⡀⠀⣤⣀⣰⣿⠶⣿⠟⠉⠀⠀⣀⣠⠴⢻⣿⡟⠀⢀⢀⡞⣡⠴⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣦⡀⠈⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⡀⠀⠀⣸⠃⠀⠀⠙⢷⣶⡀⠉⠃⠈⠏⠙⠳⣶⡦⠤⣶⣞⣿⠿⠿⣷⣾⣿⠀⠀⢫⡿⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⡄⠙⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⡇⠀⢠⡏⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠉⠉⠛⠛⠛⠒⠒⠚⠛⠛⠛⠛⠿⣯⣀⣠⠟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢿⣀⠘⢻⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⡇⢠⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣄⣀⣼⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢨⣿⢡⣾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⠿⠃⠀⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+
+-->
+
+
+
+
+
+
+</body>
+</html>
