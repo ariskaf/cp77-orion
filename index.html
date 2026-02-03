@@ -80,10 +80,11 @@
     const btn = document.getElementById("btn-log");
     if (!btn) return;
 
-    // 1️⃣ Check local session
+    // 1️⃣ Check if user is logged in
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session || !session.user) {
+      // Guest Mode
       btn.textContent = "Login";
       btn.onclick = () => {
         window.location.href = "auth.html";
@@ -91,48 +92,35 @@
       return;
     }
 
+    // 2️⃣ Logged in: Get the User ID
     const userId = session.user.id;
-    const userEmail = session.user.email;
 
-    // 2️⃣ Helper: Generate Cyberpunk ID (Username-3Let-3Dig)
-    // We use this if the database profile is missing
-    const generateCyberId = (email) => {
-        const username = email.split('@')[0].toUpperCase(); // 'aris' -> 'ARIS'
-        const letters = "XRX"; // You can randomize this if you want
-        const digits = "077";  // You can randomize this too
-        return `${username}-${letters}-${digits}`; 
-    };
-
-    // 3️⃣ Fetch profile from Supabase
+    // 3️⃣ Fetch the cool handle from your PROFILES table
+    // Your SQL automatically created this when you signed up!
     const { data: profile, error } = await supabase
       .from("profiles")
       .select("handle, role")
       .eq("id", userId)
       .single();
 
-    let displayHandle;
-
-    // 4️⃣ Determine what to show
-    if (error || !profile || !profile.handle) {
-      // FIX: Instead of "CONNECTED", we generate the ID
-      displayHandle = generateCyberId(userEmail);
+    // 4️⃣ Update the Button
+    if (profile && profile.handle) {
+      // SUCCESS: Show the ID (e.g., ARIS-NCI-077)
+      btn.textContent = profile.handle;
     } else {
-      // If profile exists, use the real handle
-      displayHandle = profile.handle;
+      // FALLBACK: If an old user logs in who doesn't have a profile row yet
+      btn.textContent = "NETRUNNER"; 
     }
 
-    // 5️⃣ Update button UI
-    btn.textContent = displayHandle;
-    btn.classList.add("glitch-effect"); // Optional: adds cool CSS class if you have one
-
+    // Admin Styling (Gold)
     if (profile && profile.role === "admin") {
-      btn.style.color = "#ffd34d"; // Admin Gold
-      btn.style.textShadow = "0 0 5px #ffd34d";
+      btn.style.color = "#ffd34d";
+      btn.style.textShadow = "0 0 8px rgba(255, 211, 77, 0.6)";
     }
 
-    // 6️⃣ Click = Logout
+    // 5️⃣ Logout Logic
     btn.onclick = async () => {
-      const confirmLog = confirm("Disconnect from Orion Uplink?");
+      const confirmLog = confirm("Disconnect link from Orion Node?");
       if (confirmLog) {
         await supabase.auth.signOut();
         location.reload();
@@ -140,9 +128,9 @@
     };
   });
 
-  // Listener for auth state changes (login/logout elsewhere)
+  // Listener for auth state changes
   supabase.auth.onAuthStateChange((event, session) => {
-     if (event === 'SIGNED_OUT') location.reload();
+    if (event === 'SIGNED_OUT') location.reload();
   });
 </script>
 
