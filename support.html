@@ -440,8 +440,10 @@
     // submit handler
     form?.addEventListener("submit", async (e) => {
   e.preventDefault();
+
+  // Clear status cleanly (one source of truth)
   setStatus("", "");
-  statusEl.textContent = ""; // clears previous link/text cleanly
+  statusEl.innerHTML = "";
 
   const alliance = document.body.dataset.alliance;
   if (!alliance) {
@@ -466,9 +468,9 @@
   }
 
   // Validate
-  const subject = safeTrim(subjectEl.value);
-  const details = safeTrim(detailsEl.value);
-  const contact = safeTrim(contactEl.value);
+  const subject  = safeTrim(subjectEl.value);
+  const details  = safeTrim(detailsEl.value);
+  const contact  = safeTrim(contactEl.value);
   const category = typeSelect.value;
   const severity = severityEl.value;
 
@@ -491,23 +493,25 @@
   logLine("[ENC]  Applying ICE-safe wrapper.........OK");
   logLine("[UPL]  Routing via ORION relay...........OK");
 
-  // Supabase client check
-  if (!window.sb) {
-    setStatus("Supabase uplink missing. Ticket stored locally only.", "err");
-    logLine("[ERR] Supabase client not found (window.sb). Using local buffer.");
-
-    // Fallback local storage
+  // Local fallback helper (used in multiple places)
+  const localFallback = () => {
     persistTicket({
       id: ticketCode,
       ts: Date.now(),
       alliance,
-      type: category,
+      category,
       severity,
       subject,
       details,
       contact
     });
+  };
 
+  // Supabase client check
+  if (!window.sb) {
+    setStatus("Supabase uplink missing. Ticket stored locally only.", "err");
+    logLine("[ERR] Supabase client not found (window.sb). Using local buffer.");
+    localFallback();
     if (btn) btn.disabled = false;
     return;
   }
@@ -515,11 +519,13 @@
   // Get logged-in user (if any)
   let user = null;
   try {
-    const { data } = await window.sb.auth.getUser();
-    user = data?.user || null;
-  } catch {}
+    const { data, error } = await window.sb.auth.getUser();
+    if (!error) user = data?.user || null;
+  } catch {
+    user = null;
+  }
 
-  // Insert into Supabase
+  // Insert into Supabase (IMPORTANT: insert expects an ARRAY)
   const payload = {
     ticket_code: ticketCode,
     user_id: user ? user.id : null,
@@ -530,72 +536,49 @@
     subject,
     details,
     contact: contact || null,
-    page_url: window.location.href
+    page_url: window.location.href,
+    status: "open"
   };
 
-  const { error } = await window.sb
-    .from("support_tickets")
-    .insert(payload);
-
-  if (error) {
-    console.error("Support ticket insert error:", error);
-    setStatus("Transmission failed. Check console / RLS policies.", "err");
-    logLine("[ERR] Uplink rejected packet. RLS or schema mismatch.");
-    logLine("[DBG] " + (error.message || "unknown error"));
-
-    // Optional fallback local storage
-    persistTicket({
-      id: ticketCode,
-      ts: Date.now(),
-      alliance,
-      type: category,
-      severity,
-      subject,
-      details,
-      contact
-    });
-
-    if (btn) btn.disabled = false;
-    return;
-  }
-
-  // Success
-  setStatus(`Ticket ${ticketCode} transmitted successfully.`, "ok");
-  logLine("[OK]  Ticket delivered to ORION queue.");
-  logLine("[TICKET] " + ticketCode + " // status=open");
-
-  // Copy ticket to clipboard (best effort)
   try {
-    await navigator.clipboard.writeText(ticketCode);
-    logLine("[INFO] Ticket ID copied to clipboard.");
-  } catch {
-    logLine("[INFO] Clipboard blocked (browser policy).");
+    const { error } = await window.sb
+      .from("support_tickets")
+      .insert([payload]); // ✅ FIXED
+
+    if (error) throw error;
+
+    // Success
+    setStatus(`Ticket ${ticketCode} transmitted successfully.`, "ok");
+    logLine("[OK]  Ticket delivered to ORION queue.");
+    logLine("[TICKET] " + ticketCode + " // status=open");
+
+    try {
+      await navigator.clipboard.writeText(ticketCode);
+      logLine("[INFO] Ticket ID copied to clipboard.");
+    } catch {
+      logLine("[INFO] Clipboard blocked (browser policy).");
+    }
+
+    // Reset fields
+    subjectEl.value = "";
+    detailsEl.value = "";
+    contactEl.value = "";
+    typeSelect.value = "bug";
+    severityEl.value = "normal";
+
+  } catch (err) {
+    console.error("Support ticket insert error:", err);
+
+    setStatus("Transmission failed. Ticket stored locally. Check RLS / schema.", "err");
+    logLine("[ERR] Uplink rejected packet. RLS or schema mismatch.");
+    logLine("[DBG] " + (err?.message || "unknown error"));
+
+    localFallback();
+  } finally {
+    if (btn) btn.disabled = false;
   }
-
-  // Reset fields
-  subjectEl.value = "";
-  detailsEl.value = "";
-  contactEl.value = "";
-  typeSelect.value = "bug";
-  severityEl.value = "normal";
-
-  if (btn) btn.disabled = false;
 });
-  });
-</script>
 
-
-
-<script src="intrusion.js"></script>
-
-
-
-<script>
-  // Any link that goes to index.html will set "skip boot" for the next index visit
-  document.querySelectorAll('a[href$="index.html"], a[href*="index.html#"], a[href*="index.html?"]').forEach(a => {
-    a.addEventListener("click", () => {
-      sessionStorage.setItem("orion_skip_boot", "1");
-    });
   });
 </script>
 
