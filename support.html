@@ -213,6 +213,17 @@
     </div>
   </div>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Global Supabase client
+  window.sb = window.supabase.createClient(
+    "YOUR_SUPABASE_URL",
+    "YOUR_SUPABASE_ANON_KEY"
+  );
+</script>
+
+
   <script>
   const ALLIANCES = {
     arasaka: {
@@ -430,108 +441,148 @@
 
     // submit handler
     form?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      setStatus("", "");
+  e.preventDefault();
+  setStatus("", "");
+  statusEl.textContent = ""; // clears previous link/text cleanly
 
-      const alliance = document.body.dataset.alliance;
-      if (!alliance) {
-        setStatus("Select an alliance first. Terminal not initialized.", "err");
-        logLine("[ERR] Alliance not selected. Aborting transmit.");
-        return;
-      }
+  const alliance = document.body.dataset.alliance;
+  if (!alliance) {
+    setStatus("Select an alliance first. Terminal not initialized.", "err");
+    logLine("[ERR] Alliance not selected. Aborting transmit.");
+    return;
+  }
 
-      // Honeypot check
-      const hpVal = safeTrim(document.getElementById("support-hp")?.value);
-      if (hpVal) {
-        setStatus("Transmission rejected.", "err");
-        logLine("[BLOCK] Bot signature detected. Dropping packet.");
-        return;
-      }
+  // Honeypot check
+  const hpVal = safeTrim(document.getElementById("support-hp")?.value);
+  if (hpVal) {
+    setStatus("Transmission rejected.", "err");
+    logLine("[BLOCK] Bot signature detected. Dropping packet.");
+    return;
+  }
 
-      // Rate limit
-      if (rateLimited()) {
-        setStatus("Rate limit: wait 60 seconds before sending another transmission.", "err");
-        logLine("[WARN] Rate limit engaged. Cooldown active.");
-        return;
-      }
+  // Rate limit
+  if (rateLimited()) {
+    setStatus("Rate limit: wait 60 seconds before sending another transmission.", "err");
+    logLine("[WARN] Rate limit engaged. Cooldown active.");
+    return;
+  }
 
-      // Validate
-      const subject = safeTrim(subjectEl.value);
-      const details = safeTrim(detailsEl.value);
-      const contact = safeTrim(contactEl.value);
-      const type = typeSelect.value;
-      const severity = severityEl.value;
+  // Validate
+  const subject = safeTrim(subjectEl.value);
+  const details = safeTrim(detailsEl.value);
+  const contact = safeTrim(contactEl.value);
+  const category = typeSelect.value;
+  const severity = severityEl.value;
 
-      markFieldError(subjectEl, subject.length < 3);
-      markFieldError(detailsEl, details.length < 10);
+  markFieldError(subjectEl, subject.length < 3);
+  markFieldError(detailsEl, details.length < 10);
 
-      if (subject.length < 3 || details.length < 10) {
-        setStatus("Fix highlighted fields (subject ≥ 3 chars, details ≥ 10 chars).", "err");
-        logLine("[ERR] Validation failed. Missing required intel.");
-        return;
-      }
+  if (subject.length < 3 || details.length < 10) {
+    setStatus("Fix highlighted fields (subject ≥ 3 chars, details ≥ 10 chars).", "err");
+    logLine("[ERR] Validation failed. Missing required intel.");
+    return;
+  }
 
-      const ticketId = makeTicketId(alliance);
+  const ticketCode = makeTicketId(alliance);
 
-      // UI lock
-      const btn = form.querySelector('button[type="submit"]');
-      if (btn) btn.disabled = true;
+  // UI lock
+  const btn = form.querySelector('button[type="submit"]');
+  if (btn) btn.disabled = true;
 
-      logLine("[SEND] Preparing transmission payload...");
-      logLine("[ENC]  Applying ICE-safe wrapper.........OK");
-      logLine("[UPL]  Routing via ORION relay...........OK");
+  logLine("[SEND] Preparing transmission payload...");
+  logLine("[ENC]  Applying ICE-safe wrapper.........OK");
+  logLine("[UPL]  Routing via ORION relay...........OK");
 
-      // “Static working” = store locally + provide fallback actions
-      const ticket = {
-        id: ticketId,
-        ts: Date.now(),
-        alliance,
-        type,
-        severity,
-        subject,
-        details,
-        contact
-      };
-      persistTicket(ticket);
+  // Supabase client check
+  if (!window.sb) {
+    setStatus("Supabase uplink missing. Ticket stored locally only.", "err");
+    logLine("[ERR] Supabase client not found (window.sb). Using local buffer.");
 
-      // Copy ticket to clipboard (best effort)
-      try {
-        await navigator.clipboard.writeText(ticketId);
-        logLine("[INFO] Ticket ID copied to clipboard.");
-      } catch {
-        logLine("[INFO] Clipboard blocked (browser policy).");
-      }
-
-      // Mailto fallback prepared (no server yet)
-      const mailto = `mailto:?subject=${encodeURIComponent("ORION Support Ticket " + ticketId + " — " + subject)}&body=${encodeURIComponent(
-        "Ticket: " + ticketId +
-        "\nAlliance: " + alliance +
-        "\nCategory: " + type +
-        "\nPriority: " + severity +
-        "\nContact: " + (contact || "(none)") +
-        "\n\nDetails:\n" + details
-      )}`;
-
-      setStatus(
-        `Ticket ${ticketId} generated. (Copied to clipboard if allowed.) You can also send it via your email client.`,
-        "ok"
-      );
-      logLine("[TICKET] " + ticketId + " committed to local archive.");
-      logLine("[NOTE] No backend connected. Using local buffer only.");
-
-      // Add a clickable link in the status (safe HTML)
-      const link = document.createElement("a");
-      link.href = mailto;
-      link.textContent = "Open email client →";
-      link.style.display = "inline-block";
-      link.style.marginLeft = "8px";
-      link.style.color = "var(--support-accent-strong)";
-      link.style.textDecoration = "none";
-      statusEl.appendChild(link);
-
-      // unlock
-      if (btn) btn.disabled = false;
+    // Fallback local storage
+    persistTicket({
+      id: ticketCode,
+      ts: Date.now(),
+      alliance,
+      type: category,
+      severity,
+      subject,
+      details,
+      contact
     });
+
+    if (btn) btn.disabled = false;
+    return;
+  }
+
+  // Get logged-in user (if any)
+  let user = null;
+  try {
+    const { data } = await window.sb.auth.getUser();
+    user = data?.user || null;
+  } catch {}
+
+  // Insert into Supabase
+  const payload = {
+    ticket_code: ticketCode,
+    user_id: user ? user.id : null,
+    email: user?.email ?? null,
+    alliance,
+    category,
+    severity,
+    subject,
+    details,
+    contact: contact || null,
+    page_url: window.location.href
+  };
+
+  const { error } = await window.sb
+    .from("support_tickets")
+    .insert(payload);
+
+  if (error) {
+    console.error("Support ticket insert error:", error);
+    setStatus("Transmission failed. Check console / RLS policies.", "err");
+    logLine("[ERR] Uplink rejected packet. RLS or schema mismatch.");
+    logLine("[DBG] " + (error.message || "unknown error"));
+
+    // Optional fallback local storage
+    persistTicket({
+      id: ticketCode,
+      ts: Date.now(),
+      alliance,
+      type: category,
+      severity,
+      subject,
+      details,
+      contact
+    });
+
+    if (btn) btn.disabled = false;
+    return;
+  }
+
+  // Success
+  setStatus(`Ticket ${ticketCode} transmitted successfully.`, "ok");
+  logLine("[OK]  Ticket delivered to ORION queue.");
+  logLine("[TICKET] " + ticketCode + " // status=open");
+
+  // Copy ticket to clipboard (best effort)
+  try {
+    await navigator.clipboard.writeText(ticketCode);
+    logLine("[INFO] Ticket ID copied to clipboard.");
+  } catch {
+    logLine("[INFO] Clipboard blocked (browser policy).");
+  }
+
+  // Reset fields
+  subjectEl.value = "";
+  detailsEl.value = "";
+  contactEl.value = "";
+  typeSelect.value = "bug";
+  severityEl.value = "normal";
+
+  if (btn) btn.disabled = false;
+});
   });
 </script>
 
