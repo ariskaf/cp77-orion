@@ -596,7 +596,10 @@
     hideMsg(suMsg);
     handleBox.hidden = true;
 
-    const email = (suEmail.value || "").trim().toLowerCase();
+    let email = (siEmail.value || "").trim().toLowerCase();
+if (email === "admin") {
+  email = "admin@cp77.net"; // Auto-complete for the boss
+}
     const name = (suName.value || "").trim();
     const baseUser = cleanBaseUsername((suUser.value || "").trim());
     const pw = suPass.value || "";
