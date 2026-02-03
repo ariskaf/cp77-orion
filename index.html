@@ -76,61 +76,60 @@
   </header>
 
   <script>
-window.addEventListener("DOMContentLoaded", async () => {
-  const btn = document.getElementById("btn-log");
-  if (!btn) return;
+  window.addEventListener("DOMContentLoaded", async () => {
+    const btn = document.getElementById("btn-log");
+    if (!btn) return;
 
-  const sb = window.sb; // must exist (your global supabase client)
-  if (!sb) {
-    console.error("Supabase client missing: window.sb is undefined");
-    btn.textContent = "Login";
-    return;
-  }
+    // 1️⃣ Check local session first (fast + reliable)
+    const { data: { session } } = await supabase.auth.getSession();
 
-  async function paintButton() {
-    const { data: { session } } = await sb.auth.getSession();
-
-    if (!session?.user) {
+    if (!session || !session.user) {
       btn.textContent = "Login";
-      btn.style.color = "";
-      btn.onclick = () => window.location.href = "auth.html";
+      btn.onclick = () => {
+        window.location.href = "auth.html";
+      };
       return;
     }
 
-    // user exists → read profile
-    const { data: profile, error } = await sb
+    const userId = session.user.id;
+
+    // 2️⃣ Fetch profile linked to auth.users.id
+    const { data: profile, error } = await supabase
       .from("profiles")
       .select("handle, role")
-      .eq("id", session.user.id)
+      .eq("id", userId)
       .single();
 
-    if (error) {
-      console.error("profiles read error:", error);
-      btn.textContent = "CONNECTED"; // fallback
-      btn.onclick = () => console.log("Session user:", session.user);
+    if (error || !profile) {
+      // fallback if profile row is missing
+      btn.textContent = "CONNECTED";
+      btn.onclick = async () => {
+        await supabase.auth.signOut();
+        location.reload();
+      };
       return;
     }
 
-    btn.innerHTML = profile.handle; // handle can include span gold etc if you want later
-    btn.style.color = profile.role === "admin" ? "#ffd34d" : "";
-    btn.onclick = () => console.log("User:", profile);
-  }
+    // 3️⃣ Update button with handle
+    btn.textContent = profile.handle;
 
-  // Paint now
-  await paintButton();
+    if (profile.role === "admin") {
+      btn.style.color = "#ffd34d"; // admin gold
+    }
 
-  // Paint again on login/logout
-  sb.auth.onAuthStateChange(() => paintButton());
-});
+    // 4️⃣ Temporary action: click = logout
+    btn.onclick = async () => {
+      await supabase.auth.signOut();
+      location.reload();
+    };
+  });
 
 
-
-supabase.auth.onAuthStateChange(() => {
+  supabase.auth.onAuthStateChange(() => {
   location.reload();
 });
 
 </script>
-
 
 
 
