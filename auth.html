@@ -491,18 +491,21 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
+
     <script>
   // ============================
-  // ORION AUTH NODE (Supabase)
-  // Keeps your UI/UX, replaces localStorage with Supabase Auth + profiles table.
+  // SUPABASE AUTH (REAL)
   // ============================
-
-  const ADMIN_USER = "admin";
-  const ADMIN_PASS = "password";
 
   const SUPABASE_URL = "PASTE_YOURS_HERE";
   const SUPABASE_ANON_KEY = "PASTE_YOURS_HERE";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // --- OPTIONAL local admin backdoor (CLIENT-SIDE, not secure) ---
+  // Recommended: create a real admin in Supabase instead (I’ll show you after).
+  const ADMIN_USER = "admin";
+  const ADMIN_PASS = "password";
+  const ADMIN_HANDLE = "admin-NCI-077";
 
   // Affiliations (explicitly ban "CP" no matter what)
   const AFFILIATIONS = ["NCI","PL","ARS","TRT","MIL","MGC","NCR","KBK","WTS","GLN","NMD","STK"];
@@ -595,7 +598,7 @@
     const base = cleanBaseUsername(baseUsername);
     const aff = pickAffiliation();
     const digits = randomDigits3();
-    return { handle: `${base}-${aff}-${digits}`, aff, digits };
+    return { handle: `${base}-${aff}-${digits}`, aff, digits, base };
   }
 
   function renderHandle(handleObj){
@@ -635,52 +638,77 @@
   btnSignin.addEventListener("click", () => setMode("signin"));
   btnSignup.addEventListener("click", () => setMode("signup"));
 
-  // ----------------------------
-  // Supabase helpers
-  // ----------------------------
+  // ==========================================
+  // PROFILE HELPERS (profiles table)
+  // ==========================================
 
-  async function handleExists(handle){
-    const { data, error } = await supabase
+  async function getProfile(userId){
+    const { data, error } = await supabaseClient
       .from("profiles")
-      .select("handle")
-      .eq("handle", handle)
-      .limit(1);
+      .select("id,email,base_username,handle,affiliation,code,role,created_at")
+      .eq("id", userId)
+      .maybeSingle();
 
-    if (error) return false; // fail-open; we'll retry in generator
-    return Array.isArray(data) && data.length > 0;
+    if (error) throw error;
+    return data || null;
   }
 
-  async function generateUniqueHandle(baseUser){
-    for (let i = 0; i < 12; i++){
-      const g = generateHandle(baseUser);
-      if (g.aff.toUpperCase() === "CP") continue;
-      if (g.handle.toUpperCase().includes("-CP-")) continue;
+  async function createProfileIfMissing(user, name, baseUsername){
+    // If profile exists, return it
+    const existing = await getProfile(user.id);
+    if (existing) return existing;
 
-      const exists = await handleExists(g.handle);
-      if (!exists) return g;
+    // Create one, ensuring unique handle (retry a few times)
+    for (let i = 0; i < 10; i++){
+      let generated = generateHandle(baseUsername);
+
+      // extra paranoia: ban "CP" anywhere
+      if (generated.base.toUpperCase().includes("CP") || generated.aff.toUpperCase() === "CP"){
+        generated = { ...generated, aff: "NCI", handle: `${generated.base}-NCI-${generated.digits}` };
+      }
+
+      const codeInt = parseInt(generated.digits, 10);
+
+      const payload = {
+        id: user.id,
+        email: user.email,
+        base_username: generated.base,
+        handle: generated.handle,
+        affiliation: generated.aff,
+        code: codeInt,
+        role: "user"
+      };
+
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .insert(payload)
+        .select()
+        .maybeSingle();
+
+      if (!error && data) return data;
+
+      // If handle unique constraint failed, retry
+      const msg = String(error?.message || "");
+      const isDup = msg.toLowerCase().includes("duplicate") || msg.toLowerCase().includes("unique");
+      if (!isDup) throw error;
     }
-    // fallback
-    const digits = randomDigits3();
-    return { handle: `${cleanBaseUsername(baseUser)}-NCI-${digits}`, aff: "NCI", digits };
+
+    throw new Error("Failed to generate a unique handle after multiple attempts.");
   }
 
-  async function fetchMyProfile(){
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return null;
-
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("handle, role")
-      .eq("id", user.id)
-      .single();
-
-    if (error) return null;
-    return data;
+  function writeSessionForIndex(profile){
+    // Keep your existing header logic compatibility
+    sessionStorage.setItem("orion_auth_session_v1", JSON.stringify({
+      email: profile.email,
+      handle: profile.handle,
+      role: profile.role || "user",
+      ts: Date.now()
+    }));
   }
 
-  // ----------------------------
+  // ==========================================
   // SIGN UP (Supabase)
-  // ----------------------------
+  // ==========================================
   $("suSubmit").addEventListener("click", async () => {
     hideMsg(suMsg);
     handleBox.hidden = true;
@@ -731,125 +759,142 @@
       return;
     }
 
-    setPill("STATUS: CREATING...");
-    logSide(`[AUTH] signup start email=${email}`);
+    try{
+      setPill("STATUS: REGISTERING");
+      logSide(`[AUTH] signup requested email=${email}`);
 
-    // 1) Create auth user
-    const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
-      email,
-      password: pw
-    });
-
-    if (signUpErr){
-      showMsg(suMsg, signUpErr.message, "bad");
-      setPill("STATUS: ERROR");
-      logSide(`[ERR] signup ${signUpErr.message}`);
-      return;
-    }
-
-    // 2) Generate unique handle and show it (always)
-    const generated = await generateUniqueHandle(baseUser);
-    handleOut.innerHTML = renderHandle(generated);
-    handleBox.hidden = false;
-
-    // 3) Insert profile row (if we already have user id)
-    const authUser = signUpData.user;
-
-    if (authUser?.id){
-      const { error: profErr } = await supabase.from("profiles").insert({
-        id: authUser.id,
+      const { data, error } = await supabaseClient.auth.signUp({
         email,
-        base_username: baseUser,
-        handle: generated.handle,
-        affiliation: generated.aff,
-        code: Number(generated.digits),
-        role: "user"
+        password: pw,
+        options: {
+          data: { name, base_username: baseUser } // stored in auth.user.user_metadata
+        }
       });
 
-      if (profErr){
-        showMsg(suMsg, "Account created, but profile insert failed. Try signing in.", "bad");
-        setPill("STATUS: PARTIAL");
-        logSide(`[WARN] profile insert failed: ${profErr.message}`);
+      if (error) throw error;
+
+      // If email confirmations are ON, session may be null here.
+      const user = data?.user || null;
+      const session = data?.session || null;
+
+      if (!user){
+        showMsg(suMsg, "Signup created, but user data missing. Try signing in.", "bad");
+        setPill("STATUS: WARN");
         return;
       }
-    }
 
-    showMsg(suMsg, "Account created. You can sign in now.", "ok");
-    setPill("STATUS: CREATED");
-    logSide(`[NEW] user=${generated.handle} email=${email}`);
+      // If session exists, we can create profile immediately.
+      if (session){
+        const profile = await createProfileIfMissing(user, name, baseUser);
+
+        handleOut.innerHTML = renderHandle({
+          handle: profile.handle,
+          digits: String(profile.code).padStart(3,"0")
+        });
+        handleBox.hidden = false;
+
+        showMsg(suMsg, "Account created. Redirecting...", "ok");
+        setPill("STATUS: CREATED");
+        logSide(`[NEW] user=${profile.handle} email=${email}`);
+
+        writeSessionForIndex(profile);
+        window.location.href = "index.html";
+        return;
+      }
+
+      // No session: email confirm likely required
+      showMsg(
+        suMsg,
+        "Account created. Check your email to confirm, then sign in.",
+        "ok"
+      );
+      setPill("STATUS: CONFIRM EMAIL");
+      logSide(`[NOTE] email confirmation likely enabled for ${email}`);
+
+      // Show a preview handle locally (not stored yet)
+      const preview = generateHandle(baseUser);
+      handleOut.innerHTML = renderHandle(preview);
+      handleBox.hidden = false;
+
+    }catch(err){
+      console.error(err);
+      showMsg(suMsg, (err?.message || "Signup failed."), "bad");
+      setPill("STATUS: ERROR");
+      logSide(`[ERR] signup ${String(err?.message || err)}`);
+    }
   });
 
-  // ----------------------------
-  // SIGN IN (Supabase + admin override)
-  // ----------------------------
+  // ==========================================
+  // SIGN IN (Supabase)
+  // ==========================================
   $("siSubmit").addEventListener("click", async () => {
     hideMsg(siMsg);
 
     const emailOrUser = (siEmail.value || "").trim();
     const pw = siPass.value || "";
 
-    // Admin login (dev override, local only)
-    if (emailOrUser.toLowerCase() === ADMIN_USER && pw === ADMIN_PASS) {
-      const adminHandle = "admin-NCI-077";
-
-      sessionStorage.setItem("orion_auth_session_v1", JSON.stringify({
+    // Optional local admin backdoor
+    if (emailOrUser.toLowerCase() === ADMIN_USER && pw === ADMIN_PASS){
+      const fakeProfile = {
         email: "admin@local",
-        handle: adminHandle,
-        role: "admin",
-        ts: Date.now()
-      }));
+        handle: ADMIN_HANDLE,
+        role: "admin"
+      };
 
-      showMsg(siMsg, `Access granted. Welcome, ${adminHandle}`, "ok");
+      writeSessionForIndex(fakeProfile);
+      showMsg(siMsg, `Access granted. Welcome, ${ADMIN_HANDLE}`, "ok");
       setPill("STATUS: ADMIN");
-      logSide(`[AUTH] admin ok user=${adminHandle}`);
-
+      logSide(`[AUTH] local admin ok user=${ADMIN_HANDLE}`);
       window.location.href = "index.html";
       return;
     }
 
     const email = emailOrUser.toLowerCase();
-
     if (!isValidEmail(email)){
       showMsg(siMsg, "Enter a valid email (or type admin).", "bad");
       setPill("STATUS: ERROR");
       return;
     }
 
-    setPill("STATUS: AUTH...");
-    logSide(`[AUTH] signin start email=${email}`);
+    try{
+      setPill("STATUS: AUTHENTICATING");
+      logSide(`[AUTH] signin email=${email}`);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password: pw
-    });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password: pw
+      });
 
-    if (error){
-      showMsg(siMsg, error.message, "bad");
+      if (error) throw error;
+
+      const user = data?.user;
+      if (!user) throw new Error("Login failed: missing user.");
+
+      // Ensure profile exists; create if missing
+      const meta = user.user_metadata || {};
+      const baseUsername = cleanBaseUsername(meta.base_username || "");
+      const fallbackBase = baseUsername || cleanBaseUsername(email.split("@")[0]) || "runner";
+
+      const profile = await createProfileIfMissing(user, meta.name || "", fallbackBase);
+
+      showMsg(siMsg, `Access granted. Welcome, ${profile.handle}`, "ok");
+      setPill("STATUS: AUTHORIZED");
+      logSide(`[AUTH] ok user=${profile.handle}`);
+
+      writeSessionForIndex(profile);
+      window.location.href = "index.html";
+
+    }catch(err){
+      console.error(err);
+      showMsg(siMsg, (err?.message || "Login failed."), "bad");
       setPill("STATUS: DENIED");
-      logSide(`[DENY] ${error.message}`);
-      return;
+      logSide(`[ERR] signin ${String(err?.message || err)}`);
     }
-
-    const prof = await fetchMyProfile();
-    const handle = prof?.handle || "UNKNOWN-HANDLE";
-    const role = prof?.role || "user";
-
-    showMsg(siMsg, `Access granted. Welcome, ${handle}`, "ok");
-    setPill("STATUS: AUTHORIZED");
-    logSide(`[AUTH] ok user=${handle}`);
-
-    sessionStorage.setItem("orion_auth_session_v1", JSON.stringify({
-      email,
-      handle,
-      role,
-      ts: Date.now()
-    }));
-
-    window.location.href = "index.html";
   });
 
   // default mode
   setMode("signin");
 </script>
+
 </body>
 </html>
