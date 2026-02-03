@@ -488,308 +488,368 @@
     </div>
   </div>
 
-  <script>
-    // --- Local-only demo storage ---
-    const STORAGE_KEY = "orion_auth_users_v1";
-    const ADMIN_USER = "admin";
-    const ADMIN_PASS = "password";
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-    // Affiliations (explicitly ban "CP" no matter what)
-    const AFFILIATIONS = ["NCI","PL","ARS","TRT","MIL","MGC","NCR","KBK","WTS","GLN","NMD","STK"];
-    const BANNED_AFF = new Set(["CP"]); // hard ban, even if someone adds it later
+    <script>
+  // ============================
+  // ORION AUTH NODE (Supabase)
+  // Keeps your UI/UX, replaces localStorage with Supabase Auth + profiles table.
+  // ============================
 
-    const $ = (id) => document.getElementById(id);
+  const ADMIN_USER = "admin";
+  const ADMIN_PASS = "password";
 
-    const btnSignin = $("btnSignin");
-    const btnSignup = $("btnSignup");
-    const panelSignin = $("panelSignin");
-    const panelSignup = $("panelSignup");
-    const modeLabel = $("modeLabel");
-    const statusPill = $("statusPill");
-    const sideLog = $("sideLog");
+  const SUPABASE_URL = "PASTE_YOURS_HERE";
+  const SUPABASE_ANON_KEY = "PASTE_YOURS_HERE";
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const siEmail = $("siEmail");
-    const siPass = $("siPass");
-    const siMsg = $("siMsg");
+  // Affiliations (explicitly ban "CP" no matter what)
+  const AFFILIATIONS = ["NCI","PL","ARS","TRT","MIL","MGC","NCR","KBK","WTS","GLN","NMD","STK"];
+  const BANNED_AFF = new Set(["CP"]); // hard ban, even if someone adds it later
 
-    const suEmail = $("suEmail");
-    const suName  = $("suName");
-    const suUser  = $("suUser");
-    const suPass  = $("suPass");
-    const suPass2 = $("suPass2");
-    const suTerms = $("suTerms");
-    const suMsg   = $("suMsg");
-    const handleBox = $("handleBox");
-    const handleOut = $("handleOut");
+  const $ = (id) => document.getElementById(id);
 
-    function logSide(line){
-      if (!sideLog) return;
-      sideLog.textContent += "\\n" + line;
-      sideLog.scrollTop = sideLog.scrollHeight;
+  const btnSignin = $("btnSignin");
+  const btnSignup = $("btnSignup");
+  const panelSignin = $("panelSignin");
+  const panelSignup = $("panelSignup");
+  const modeLabel = $("modeLabel");
+  const statusPill = $("statusPill");
+  const sideLog = $("sideLog");
+
+  const siEmail = $("siEmail");
+  const siPass = $("siPass");
+  const siMsg = $("siMsg");
+
+  const suEmail = $("suEmail");
+  const suName  = $("suName");
+  const suUser  = $("suUser");
+  const suPass  = $("suPass");
+  const suPass2 = $("suPass2");
+  const suTerms = $("suTerms");
+  const suMsg   = $("suMsg");
+  const handleBox = $("handleBox");
+  const handleOut = $("handleOut");
+
+  function logSide(line){
+    if (!sideLog) return;
+    sideLog.textContent += "\n" + line;
+    sideLog.scrollTop = sideLog.scrollHeight;
+  }
+
+  function setPill(text){
+    statusPill.textContent = text;
+  }
+
+  function showMsg(el, text, kind){
+    el.hidden = false;
+    el.className = "msg " + (kind || "");
+    el.textContent = text;
+  }
+
+  function hideMsg(el){
+    el.hidden = true;
+    el.textContent = "";
+    el.className = "msg";
+  }
+
+  function isValidEmail(email){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+  }
+
+  function passwordCheck(pw){
+    if (typeof pw !== "string") return { ok:false, reason:"Password invalid." };
+    if (pw.length < 8 || pw.length > 32) return { ok:false, reason:"Password must be 8–32 characters." };
+    if (!/[a-z]/.test(pw)) return { ok:false, reason:"Password must include a lowercase letter." };
+    if (!/[A-Z]/.test(pw)) return { ok:false, reason:"Password must include an uppercase letter." };
+    if (!/[0-9]/.test(pw)) return { ok:false, reason:"Password must include a number." };
+    if (!/[^A-Za-z0-9]/.test(pw)) return { ok:false, reason:"Password must include a symbol." };
+    return { ok:true, reason:"OK" };
+  }
+
+  function cleanBaseUsername(u){
+    // Allow letters, numbers, underscore, dash. Remove spaces.
+    return (u || "").trim().replace(/\s+/g,"").replace(/[^A-Za-z0-9_-]/g,"");
+  }
+
+  function pickAffiliation(){
+    const pool = AFFILIATIONS.filter(x => !BANNED_AFF.has(String(x).toUpperCase()));
+    const aff = pool[Math.floor(Math.random() * pool.length)] || "NCI";
+    if (String(aff).toUpperCase() === "CP") return "NCI";
+    return aff;
+  }
+
+  function pad3(n){
+    const s = String(n);
+    if (s.length >= 3) return s.slice(-3);
+    return ("000" + s).slice(-3);
+  }
+
+  function randomDigits3(){
+    const n = Math.floor(Math.random() * 1000); // 000-999
+    return pad3(n);
+  }
+
+  function generateHandle(baseUsername){
+    const base = cleanBaseUsername(baseUsername);
+    const aff = pickAffiliation();
+    const digits = randomDigits3();
+    return { handle: `${base}-${aff}-${digits}`, aff, digits };
+  }
+
+  function renderHandle(handleObj){
+    const { handle, digits } = handleObj;
+    const parts = handle.split("-");
+    const last = parts[parts.length - 1] || "";
+    const safeLast = last.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const basePart = parts.slice(0, -1).join("-").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+    if (digits === "077"){
+      return `${basePart}-<span class="gold">${safeLast}</span>`;
+    }
+    return `${basePart}-${safeLast}`;
+  }
+
+  function setMode(mode){
+    const isSignin = mode === "signin";
+    btnSignin.classList.toggle("active", isSignin);
+    btnSignup.classList.toggle("active", !isSignin);
+    btnSignin.setAttribute("aria-selected", String(isSignin));
+    btnSignup.setAttribute("aria-selected", String(!isSignin));
+
+    panelSignin.classList.toggle("active", isSignin);
+    panelSignin.classList.toggle("inactive", !isSignin);
+
+    panelSignup.classList.toggle("active", !isSignin);
+    panelSignup.classList.toggle("inactive", isSignin);
+
+    modeLabel.textContent = isSignin ? "SIGN IN" : "SIGN UP";
+    document.title = isSignin ? "ORION AUTH NODE // Sign In" : "ORION AUTH NODE // Sign Up";
+
+    hideMsg(siMsg); hideMsg(suMsg);
+    handleBox.hidden = true;
+    setPill("STATUS: READY");
+  }
+
+  btnSignin.addEventListener("click", () => setMode("signin"));
+  btnSignup.addEventListener("click", () => setMode("signup"));
+
+  // ----------------------------
+  // Supabase helpers
+  // ----------------------------
+
+  async function handleExists(handle){
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("handle")
+      .eq("handle", handle)
+      .limit(1);
+
+    if (error) return false; // fail-open; we'll retry in generator
+    return Array.isArray(data) && data.length > 0;
+  }
+
+  async function generateUniqueHandle(baseUser){
+    for (let i = 0; i < 12; i++){
+      const g = generateHandle(baseUser);
+      if (g.aff.toUpperCase() === "CP") continue;
+      if (g.handle.toUpperCase().includes("-CP-")) continue;
+
+      const exists = await handleExists(g.handle);
+      if (!exists) return g;
+    }
+    // fallback
+    const digits = randomDigits3();
+    return { handle: `${cleanBaseUsername(baseUser)}-NCI-${digits}`, aff: "NCI", digits };
+  }
+
+  async function fetchMyProfile(){
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("handle, role")
+      .eq("id", user.id)
+      .single();
+
+    if (error) return null;
+    return data;
+  }
+
+  // ----------------------------
+  // SIGN UP (Supabase)
+  // ----------------------------
+  $("suSubmit").addEventListener("click", async () => {
+    hideMsg(suMsg);
+    handleBox.hidden = true;
+
+    const email = (suEmail.value || "").trim().toLowerCase();
+    const name = (suName.value || "").trim();
+    const baseUserRaw = (suUser.value || "").trim();
+    const baseUser = cleanBaseUsername(baseUserRaw);
+    const pw = suPass.value || "";
+    const pw2 = suPass2.value || "";
+    const terms = suTerms.checked;
+
+    if (!isValidEmail(email)){
+      showMsg(suMsg, "Invalid email format.", "bad");
+      setPill("STATUS: ERROR");
+      return;
+    }
+    if (!name){
+      showMsg(suMsg, "Name is required.", "bad");
+      setPill("STATUS: ERROR");
+      return;
+    }
+    if (!baseUser || baseUser.length < 3){
+      showMsg(suMsg, "Username is required (min 3 chars).", "bad");
+      setPill("STATUS: ERROR");
+      return;
+    }
+    if (baseUser.toUpperCase().includes("CP")){
+      showMsg(suMsg, 'Username cannot contain "CP".', "bad");
+      setPill("STATUS: ERROR");
+      return;
     }
 
-    function setPill(text){
-      statusPill.textContent = text;
+    const check = passwordCheck(pw);
+    if (!check.ok){
+      showMsg(suMsg, check.reason, "bad");
+      setPill("STATUS: ERROR");
+      return;
+    }
+    if (pw !== pw2){
+      showMsg(suMsg, "Passwords do not match.", "bad");
+      setPill("STATUS: ERROR");
+      return;
+    }
+    if (!terms){
+      showMsg(suMsg, "You must accept the Terms.", "bad");
+      setPill("STATUS: ERROR");
+      return;
     }
 
-    function showMsg(el, text, kind){
-      el.hidden = false;
-      el.className = "msg " + (kind || "");
-      el.textContent = text;
-    }
+    setPill("STATUS: CREATING...");
+    logSide(`[AUTH] signup start email=${email}`);
 
-    function hideMsg(el){
-      el.hidden = true;
-      el.textContent = "";
-      el.className = "msg";
-    }
-
-    function loadUsers(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : {};
-      }catch{
-        return {};
-      }
-    }
-
-    function saveUsers(users){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
-    }
-
-    function isValidEmail(email){
-      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-    }
-
-    function passwordCheck(pw){
-      if (typeof pw !== "string") return { ok:false, reason:"Password invalid." };
-      if (pw.length < 8 || pw.length > 32) return { ok:false, reason:"Password must be 8–32 characters." };
-      if (!/[a-z]/.test(pw)) return { ok:false, reason:"Password must include a lowercase letter." };
-      if (!/[A-Z]/.test(pw)) return { ok:false, reason:"Password must include an uppercase letter." };
-      if (!/[0-9]/.test(pw)) return { ok:false, reason:"Password must include a number." };
-      if (!/[^A-Za-z0-9]/.test(pw)) return { ok:false, reason:"Password must include a symbol." };
-      return { ok:true, reason:"OK" };
-    }
-
-    function cleanBaseUsername(u){
-      // Allow letters, numbers, underscore, dash. Remove spaces.
-      return (u || "").trim().replace(/\s+/g,"").replace(/[^A-Za-z0-9_-]/g,"");
-    }
-
-    function pickAffiliation(){
-      const pool = AFFILIATIONS.filter(x => !BANNED_AFF.has(String(x).toUpperCase()));
-      const aff = pool[Math.floor(Math.random() * pool.length)] || "NCI";
-      // extra safety: never allow "CP" substring exactly
-      if (String(aff).toUpperCase() === "CP") return "NCI";
-      return aff;
-    }
-
-    function pad3(n){
-      const s = String(n);
-      if (s.length >= 3) return s.slice(-3);
-      return ("000" + s).slice(-3);
-    }
-
-    function randomDigits3(){
-      const n = Math.floor(Math.random() * 1000); // 000-999
-      return pad3(n);
-    }
-
-    function generateHandle(baseUsername){
-      const base = cleanBaseUsername(baseUsername);
-      const aff = pickAffiliation();
-      const digits = randomDigits3();
-      // format: base-AFF-### (AFF max 3 already)
-      return { handle: `${base}-${aff}-${digits}`, aff, digits };
-    }
-
-    function renderHandle(handleObj){
-      const { handle, digits } = handleObj;
-      // make only the digits gold IF digits === "077"
-      const parts = handle.split("-");
-      const last = parts[parts.length - 1] || "";
-      const safeLast = last.replace(/</g,"&lt;").replace(/>/g,"&gt;");
-      const basePart = parts.slice(0, -1).join("-").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-
-      if (digits === "077"){
-        return `${basePart}-<span class="gold">${safeLast}</span>`;
-      }
-      return `${basePart}-${safeLast}`;
-    }
-
-    function setMode(mode){
-      const isSignin = mode === "signin";
-      btnSignin.classList.toggle("active", isSignin);
-      btnSignup.classList.toggle("active", !isSignin);
-      btnSignin.setAttribute("aria-selected", String(isSignin));
-      btnSignup.setAttribute("aria-selected", String(!isSignin));
-
-      panelSignin.classList.toggle("active", isSignin);
-      panelSignin.classList.toggle("inactive", !isSignin);
-
-      panelSignup.classList.toggle("active", !isSignin);
-      panelSignup.classList.toggle("inactive", isSignin);
-
-      modeLabel.textContent = isSignin ? "SIGN IN" : "SIGN UP";
-      document.title = isSignin ? "ORION AUTH NODE // Sign In" : "ORION AUTH NODE // Sign Up";
-
-      hideMsg(siMsg); hideMsg(suMsg);
-      handleBox.hidden = true;
-      setPill("STATUS: READY");
-    }
-
-    btnSignin.addEventListener("click", () => setMode("signin"));
-    btnSignup.addEventListener("click", () => setMode("signup"));
-
-    // SIGN UP
-    $("suSubmit").addEventListener("click", () => {
-      hideMsg(suMsg);
-      handleBox.hidden = true;
-
-      const email = (suEmail.value || "").trim().toLowerCase();
-      const name = (suName.value || "").trim();
-      const baseUserRaw = (suUser.value || "").trim();
-      const baseUser = cleanBaseUsername(baseUserRaw);
-      const pw = suPass.value || "";
-      const pw2 = suPass2.value || "";
-      const terms = suTerms.checked;
-
-      if (!isValidEmail(email)){
-        showMsg(suMsg, "Invalid email format.", "bad");
-        setPill("STATUS: ERROR");
-        return;
-      }
-      if (!name){
-        showMsg(suMsg, "Name is required.", "bad");
-        setPill("STATUS: ERROR");
-        return;
-      }
-      if (!baseUser || baseUser.length < 3){
-        showMsg(suMsg, "Username is required (min 3 chars).", "bad");
-        setPill("STATUS: ERROR");
-        return;
-      }
-      if (baseUser.toUpperCase().includes("CP")){
-        showMsg(suMsg, 'Username cannot contain "CP".', "bad");
-        setPill("STATUS: ERROR");
-        return;
-      }
-
-      const check = passwordCheck(pw);
-      if (!check.ok){
-        showMsg(suMsg, check.reason, "bad");
-        setPill("STATUS: ERROR");
-        return;
-      }
-      if (pw !== pw2){
-        showMsg(suMsg, "Passwords do not match.", "bad");
-        setPill("STATUS: ERROR");
-        return;
-      }
-      if (!terms){
-        showMsg(suMsg, "You must accept the Terms.", "bad");
-        setPill("STATUS: ERROR");
-        return;
-      }
-
-      const users = loadUsers();
-      if (users[email]){
-        showMsg(suMsg, "Account already exists for this email.", "bad");
-        setPill("STATUS: BLOCKED");
-        return;
-      }
-
-      // generate handle (unique-ish)
-      let generated = generateHandle(baseUser);
-      // Ensure we never produce an aff "CP"
-      if (generated.aff.toUpperCase() === "CP"){
-        generated = { ...generated, aff: "NCI", handle: `${cleanBaseUsername(baseUser)}-NCI-${generated.digits}` };
-      }
-
-      // Store (demo only; password stored plaintext here = NOT secure)
-      users[email] = {
-        email,
-        name,
-        baseUsername: baseUser,
-        handle: generated.handle,
-        password: pw,
-        createdAt: Date.now()
-      };
-      saveUsers(users);
-
-      handleOut.innerHTML = renderHandle(generated);
-      handleBox.hidden = false;
-
-      showMsg(suMsg, "Account created. You can sign in now.", "ok");
-      setPill("STATUS: CREATED");
-      logSide(`[NEW] user=${generated.handle} email=${email}`);
+    // 1) Create auth user
+    const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
+      email,
+      password: pw
     });
 
-    // SIGN IN
-    $("siSubmit").addEventListener("click", () => {
-  hideMsg(siMsg);
+    if (signUpErr){
+      showMsg(suMsg, signUpErr.message, "bad");
+      setPill("STATUS: ERROR");
+      logSide(`[ERR] signup ${signUpErr.message}`);
+      return;
+    }
 
-  const emailOrUser = (siEmail.value || "").trim();
-  const pw = siPass.value || "";
+    // 2) Generate unique handle and show it (always)
+    const generated = await generateUniqueHandle(baseUser);
+    handleOut.innerHTML = renderHandle(generated);
+    handleBox.hidden = false;
 
-  // Admin login (local demo)
-  if (emailOrUser.toLowerCase() === ADMIN_USER && pw === ADMIN_PASS) {
-    const adminHandle = "admin-NCI-077";
+    // 3) Insert profile row (if we already have user id)
+    const authUser = signUpData.user;
+
+    if (authUser?.id){
+      const { error: profErr } = await supabase.from("profiles").insert({
+        id: authUser.id,
+        email,
+        base_username: baseUser,
+        handle: generated.handle,
+        affiliation: generated.aff,
+        code: Number(generated.digits),
+        role: "user"
+      });
+
+      if (profErr){
+        showMsg(suMsg, "Account created, but profile insert failed. Try signing in.", "bad");
+        setPill("STATUS: PARTIAL");
+        logSide(`[WARN] profile insert failed: ${profErr.message}`);
+        return;
+      }
+    }
+
+    showMsg(suMsg, "Account created. You can sign in now.", "ok");
+    setPill("STATUS: CREATED");
+    logSide(`[NEW] user=${generated.handle} email=${email}`);
+  });
+
+  // ----------------------------
+  // SIGN IN (Supabase + admin override)
+  // ----------------------------
+  $("siSubmit").addEventListener("click", async () => {
+    hideMsg(siMsg);
+
+    const emailOrUser = (siEmail.value || "").trim();
+    const pw = siPass.value || "";
+
+    // Admin login (dev override, local only)
+    if (emailOrUser.toLowerCase() === ADMIN_USER && pw === ADMIN_PASS) {
+      const adminHandle = "admin-NCI-077";
+
+      sessionStorage.setItem("orion_auth_session_v1", JSON.stringify({
+        email: "admin@local",
+        handle: adminHandle,
+        role: "admin",
+        ts: Date.now()
+      }));
+
+      showMsg(siMsg, `Access granted. Welcome, ${adminHandle}`, "ok");
+      setPill("STATUS: ADMIN");
+      logSide(`[AUTH] admin ok user=${adminHandle}`);
+
+      window.location.href = "index.html";
+      return;
+    }
+
+    const email = emailOrUser.toLowerCase();
+
+    if (!isValidEmail(email)){
+      showMsg(siMsg, "Enter a valid email (or type admin).", "bad");
+      setPill("STATUS: ERROR");
+      return;
+    }
+
+    setPill("STATUS: AUTH...");
+    logSide(`[AUTH] signin start email=${email}`);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password: pw
+    });
+
+    if (error){
+      showMsg(siMsg, error.message, "bad");
+      setPill("STATUS: DENIED");
+      logSide(`[DENY] ${error.message}`);
+      return;
+    }
+
+    const prof = await fetchMyProfile();
+    const handle = prof?.handle || "UNKNOWN-HANDLE";
+    const role = prof?.role || "user";
+
+    showMsg(siMsg, `Access granted. Welcome, ${handle}`, "ok");
+    setPill("STATUS: AUTHORIZED");
+    logSide(`[AUTH] ok user=${handle}`);
 
     sessionStorage.setItem("orion_auth_session_v1", JSON.stringify({
-      email: "admin@local",
-      handle: adminHandle,
-      role: "admin",
+      email,
+      handle,
+      role,
       ts: Date.now()
     }));
 
-    showMsg(siMsg, `Access granted. Welcome, ${adminHandle}`, "ok");
-    setPill("STATUS: ADMIN");
-    logSide(`[AUTH] admin ok user=${adminHandle}`);
-
     window.location.href = "index.html";
-    return;
-  }
+  });
 
-  // Normal user login uses email
-  const email = emailOrUser.toLowerCase();
-
-  if (!isValidEmail(email)){
-    showMsg(siMsg, "Enter a valid email (or type admin).", "bad");
-    setPill("STATUS: ERROR");
-    return;
-  }
-
-  const users = loadUsers();
-  const user = users[email];
-  if (!user){
-    showMsg(siMsg, "No account found for this email.", "bad");
-    setPill("STATUS: DENIED");
-    return;
-  }
-  if (user.password !== pw){
-    showMsg(siMsg, "Incorrect password.", "bad");
-    setPill("STATUS: DENIED");
-    return;
-  }
-
-  showMsg(siMsg, `Access granted. Welcome, ${user.handle}`, "ok");
-  setPill("STATUS: AUTHORIZED");
-  logSide(`[AUTH] ok user=${user.handle}`);
-
-  sessionStorage.setItem("orion_auth_session_v1", JSON.stringify({
-    email: user.email,
-    handle: user.handle,
-    role: "user",
-    ts: Date.now()
-  }));
-
-  window.location.href = "index.html";
-});
-
-    // default mode
-    setMode("signin");
-  </script>
+  // default mode
+  setMode("signin");
+</script>
 </body>
 </html>
