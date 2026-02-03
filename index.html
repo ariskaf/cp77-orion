@@ -122,6 +122,13 @@ window.addEventListener("DOMContentLoaded", async () => {
   // Paint again on login/logout
   sb.auth.onAuthStateChange(() => paintButton());
 });
+
+
+
+supabase.auth.onAuthStateChange(() => {
+  location.reload();
+});
+
 </script>
 
 
