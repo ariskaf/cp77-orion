@@ -80,7 +80,7 @@
     const btn = document.getElementById("btn-log");
     if (!btn) return;
 
-    // 1️⃣ Check local session first (fast + reliable)
+    // 1️⃣ Check local session
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session || !session.user) {
@@ -92,43 +92,58 @@
     }
 
     const userId = session.user.id;
+    const userEmail = session.user.email;
 
-    // 2️⃣ Fetch profile linked to auth.users.id
+    // 2️⃣ Helper: Generate Cyberpunk ID (Username-3Let-3Dig)
+    // We use this if the database profile is missing
+    const generateCyberId = (email) => {
+        const username = email.split('@')[0].toUpperCase(); // 'aris' -> 'ARIS'
+        const letters = "XRX"; // You can randomize this if you want
+        const digits = "077";  // You can randomize this too
+        return `${username}-${letters}-${digits}`; 
+    };
+
+    // 3️⃣ Fetch profile from Supabase
     const { data: profile, error } = await supabase
       .from("profiles")
       .select("handle, role")
       .eq("id", userId)
       .single();
 
-    if (error || !profile) {
-      // fallback if profile row is missing
-      btn.textContent = "CONNECTED";
-      btn.onclick = async () => {
+    let displayHandle;
+
+    // 4️⃣ Determine what to show
+    if (error || !profile || !profile.handle) {
+      // FIX: Instead of "CONNECTED", we generate the ID
+      displayHandle = generateCyberId(userEmail);
+    } else {
+      // If profile exists, use the real handle
+      displayHandle = profile.handle;
+    }
+
+    // 5️⃣ Update button UI
+    btn.textContent = displayHandle;
+    btn.classList.add("glitch-effect"); // Optional: adds cool CSS class if you have one
+
+    if (profile && profile.role === "admin") {
+      btn.style.color = "#ffd34d"; // Admin Gold
+      btn.style.textShadow = "0 0 5px #ffd34d";
+    }
+
+    // 6️⃣ Click = Logout
+    btn.onclick = async () => {
+      const confirmLog = confirm("Disconnect from Orion Uplink?");
+      if (confirmLog) {
         await supabase.auth.signOut();
         location.reload();
-      };
-      return;
-    }
-
-    // 3️⃣ Update button with handle
-    btn.textContent = profile.handle;
-
-    if (profile.role === "admin") {
-      btn.style.color = "#ffd34d"; // admin gold
-    }
-
-    // 4️⃣ Temporary action: click = logout
-    btn.onclick = async () => {
-      await supabase.auth.signOut();
-      location.reload();
+      }
     };
   });
 
-
-  supabase.auth.onAuthStateChange(() => {
-  location.reload();
-});
-
+  // Listener for auth state changes (login/logout elsewhere)
+  supabase.auth.onAuthStateChange((event, session) => {
+     if (event === 'SIGNED_OUT') location.reload();
+  });
 </script>
 
 
