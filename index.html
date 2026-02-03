@@ -75,6 +75,49 @@
     </nav>
   </header>
 
+  <script>
+(async () => {
+  const btn = document.getElementById("btn-log");
+  if (!btn) return;
+
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    // Not logged in
+    btn.textContent = "Login";
+    btn.onclick = () => {
+      window.location.href = "auth.html";
+    };
+    return;
+  }
+
+  // Logged in → fetch profile
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("handle, role")
+    .eq("id", user.id)
+    .single();
+
+  if (error || !profile) {
+    btn.textContent = "UNKNOWN";
+    return;
+  }
+
+  btn.textContent = profile.handle;
+
+  // Optional: admin hint (you can style this later)
+  if (profile.role === "admin") {
+    btn.style.color = "#ffd34d"; // subtle gold
+  }
+
+  // Optional dropdown later
+  btn.onclick = () => {
+    console.log("User:", profile);
+  };
+})();
+</script>
+
+
   <!-- SECURITY BREACH BANNER -->
   <div class="security-breach" aria-live="polite">
     <div class="security-breach-inner">
@@ -816,6 +859,18 @@ rights only.
     <div class="bw-watch__hint">RELOAD REQUIRED</div>
   </div>
 </div>
+
+
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "PASTE_YOURS_HERE";
+  const SUPABASE_ANON_KEY = "PASTE_YOURS_HERE";
+  const supabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+</script>
 
 
 
