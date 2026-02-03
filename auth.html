@@ -494,13 +494,15 @@
 
 
     <script>
-
-      window.addEventListener("DOMContentLoaded", () => {
-
+window.addEventListener("DOMContentLoaded", () => {
+  // --- Supabase ---
   const SUPABASE_URL = "https://mleouhkgejhhkohabfkh.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_is4iznE0iIMtkLBJZGqzDQ_KFaf2mY2";
+
+
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // --- Helpers / DOM ---
   const $ = (id) => document.getElementById(id);
 
   const btnSignin = $("btnSignin");
@@ -525,8 +527,6 @@
   const handleBox = $("handleBox");
   const handleOut = $("handleOut");
 
-  // Affiliations list stays client-side only for vibe;
-  // real handle generation happens in DB trigger.
   const BANNED_TOKEN = "CP";
 
   function logSide(line){
@@ -535,15 +535,19 @@
     sideLog.scrollTop = sideLog.scrollHeight;
   }
 
-  function setPill(text){ statusPill.textContent = text; }
+  function setPill(text){
+    if (statusPill) statusPill.textContent = text;
+  }
 
   function showMsg(el, text, kind){
+    if (!el) return;
     el.hidden = false;
     el.className = "msg " + (kind || "");
     el.textContent = text;
   }
 
   function hideMsg(el){
+    if (!el) return;
     el.hidden = true;
     el.textContent = "";
     el.className = "msg";
@@ -569,63 +573,101 @@
 
   function setMode(mode){
     const isSignin = mode === "signin";
-    btnSignin.classList.toggle("active", isSignin);
-    btnSignup.classList.toggle("active", !isSignin);
-    btnSignin.setAttribute("aria-selected", String(isSignin));
-    btnSignup.setAttribute("aria-selected", String(!isSignin));
 
-    panelSignin.classList.toggle("active", isSignin);
-    panelSignin.classList.toggle("inactive", !isSignin);
+    btnSignin?.classList.toggle("active", isSignin);
+    btnSignup?.classList.toggle("active", !isSignin);
+    btnSignin?.setAttribute("aria-selected", String(isSignin));
+    btnSignup?.setAttribute("aria-selected", String(!isSignin));
 
-    panelSignup.classList.toggle("active", !isSignin);
-    panelSignup.classList.toggle("inactive", isSignin);
+    panelSignin?.classList.toggle("active", isSignin);
+    panelSignin?.classList.toggle("inactive", !isSignin);
 
-    modeLabel.textContent = isSignin ? "SIGN IN" : "SIGN UP";
+    panelSignup?.classList.toggle("active", !isSignin);
+    panelSignup?.classList.toggle("inactive", isSignin);
+
+    if (modeLabel) modeLabel.textContent = isSignin ? "SIGN IN" : "SIGN UP";
     document.title = isSignin ? "ORION AUTH NODE // Sign In" : "ORION AUTH NODE // Sign Up";
 
-    hideMsg(siMsg); hideMsg(suMsg);
-    handleBox.hidden = true;
+    hideMsg(siMsg);
+    hideMsg(suMsg);
+    if (handleBox) handleBox.hidden = true;
     setPill("STATUS: READY");
   }
 
-  btnSignin.addEventListener("click", () => setMode("signin"));
-  btnSignup.addEventListener("click", () => setMode("signup"));
+  btnSignin?.addEventListener("click", () => setMode("signin"));
+  btnSignup?.addEventListener("click", () => setMode("signup"));
 
+  // --- Fetch profile handle (retry because trigger may be delayed) ---
+  async function fetchProfileHandleWithRetry(userId, tries = 8){
+    for (let i = 0; i < tries; i++){
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("handle, role, code")
+        .eq("id", userId)
+        .single();
+
+      if (!error && data?.handle) return data;
+
+      // wait a bit longer each time
+      await new Promise(r => setTimeout(r, 250 + i * 250));
+    }
+    return null;
+  }
+
+  // =========================
   // SIGN UP (Supabase)
-  $("suSubmit").addEventListener("click", async () => {
+  // =========================
+  $("suSubmit")?.addEventListener("click", async () => {
     hideMsg(suMsg);
-    handleBox.hidden = true;
+    if (handleBox) handleBox.hidden = true;
 
-    let email = (siEmail.value || "").trim().toLowerCase();
-if (email === "admin") {
-  email = "admin@cp77.net"; // Auto-complete for the boss
-}
-    const name = (suName.value || "").trim();
-    const baseUser = cleanBaseUsername((suUser.value || "").trim());
-    const pw = suPass.value || "";
-    const pw2 = suPass2.value || "";
-    const terms = suTerms.checked;
+    // ✅ FIX: use suEmail (signup email), NOT siEmail
+    const email = (suEmail?.value || "").trim().toLowerCase();
+    const name = (suName?.value || "").trim();
+    const baseUser = cleanBaseUsername((suUser?.value || "").trim());
+    const pw = suPass?.value || "";
+    const pw2 = suPass2?.value || "";
+    const terms = !!suTerms?.checked;
 
-    if (!isValidEmail(email)) return showMsg(suMsg, "Invalid email format.", "bad");
-    if (!name) return showMsg(suMsg, "Name is required.", "bad");
-    if (!baseUser || baseUser.length < 3) return showMsg(suMsg, "Username is required (min 3 chars).", "bad");
-
+    if (!isValidEmail(email)) {
+      setPill("STATUS: ERROR");
+      return showMsg(suMsg, "Invalid email format.", "bad");
+    }
+    if (!name) {
+      setPill("STATUS: ERROR");
+      return showMsg(suMsg, "Name is required.", "bad");
+    }
+    if (!baseUser || baseUser.length < 3) {
+      setPill("STATUS: ERROR");
+      return showMsg(suMsg, "Username is required (min 3 chars).", "bad");
+    }
     if (baseUser.toUpperCase().includes(BANNED_TOKEN)) {
+      setPill("STATUS: ERROR");
       return showMsg(suMsg, 'Username cannot contain "CP".', "bad");
     }
 
     const check = passwordCheck(pw);
-    if (!check.ok) return showMsg(suMsg, check.reason, "bad");
-    if (pw !== pw2) return showMsg(suMsg, "Passwords do not match.", "bad");
-    if (!terms) return showMsg(suMsg, "You must accept the Terms.", "bad");
+    if (!check.ok) {
+      setPill("STATUS: ERROR");
+      return showMsg(suMsg, check.reason, "bad");
+    }
+    if (pw !== pw2) {
+      setPill("STATUS: ERROR");
+      return showMsg(suMsg, "Passwords do not match.", "bad");
+    }
+    if (!terms) {
+      setPill("STATUS: ERROR");
+      return showMsg(suMsg, "You must accept the Terms.", "bad");
+    }
 
     setPill("STATUS: CREATING");
-    logSide(`[AUTH] signUp email=${email}`);
+    logSide(`[AUTH] signUp requested email=${email}`);
 
     const { data, error } = await supabase.auth.signUp({
       email,
       password: pw,
       options: {
+        // goes into auth.users.raw_user_meta_data
         data: {
           name,
           base_username: baseUser
@@ -635,46 +677,58 @@ if (email === "admin") {
 
     if (error) {
       setPill("STATUS: ERROR");
+      logSide(`[ERR] signUp failed: ${error.message}`);
       return showMsg(suMsg, error.message, "bad");
     }
 
-    // If email confirmations are ON, user may need to confirm first.
-    // We can still show success.
     setPill("STATUS: CREATED");
-    showMsg(suMsg, "Account created. If email confirmation is enabled, check your inbox, then sign in.", "ok");
 
-    // If a session exists immediately, fetch handle now
-    const { data: userData } = await supabase.auth.getUser();
-    const user = userData?.user;
+    // If email confirmation is ON, user might not have an active session yet.
+    // We'll still show success and (if session exists) try to show handle.
+    showMsg(
+      suMsg,
+      "Account created. If email confirmation is enabled, check your inbox, then sign in.",
+      "ok"
+    );
 
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("handle, code")
-        .eq("id", user.id)
-        .single();
+    const userId = data?.user?.id;
+    if (!userId) {
+      // No session yet (confirmation required). Switch to sign-in.
+      logSide("[INFO] No active session yet (email confirmation likely enabled).");
+      return;
+    }
 
-      if (profile?.handle) {
-        handleOut.textContent = profile.handle; // keep it simple here
-        handleBox.hidden = false;
-      }
+    const profile = await fetchProfileHandleWithRetry(userId);
+    if (profile?.handle) {
+      if (handleOut) handleOut.textContent = profile.handle;
+      if (handleBox) handleBox.hidden = false;
+      logSide(`[OK] profile handle ready: ${profile.handle}`);
+    } else {
+      logSide("[WARN] profile handle not ready yet (trigger delay).");
     }
   });
 
+  // =========================
   // SIGN IN (Supabase)
-  $("siSubmit").addEventListener("click", async () => {
+  // =========================
+  $("siSubmit")?.addEventListener("click", async () => {
     hideMsg(siMsg);
 
-    const email = (siEmail.value || "").trim().toLowerCase();
-    const pw = siPass.value || "";
+    let email = (siEmail?.value || "").trim().toLowerCase();
+    const pw = siPass?.value || "";
+
+    // Optional: allow typing "admin" instead of the email
+    if (email === "admin") {
+      email = "admin@cp77.net";
+    }
 
     if (!isValidEmail(email)) {
       setPill("STATUS: ERROR");
-      return showMsg(siMsg, "Enter a valid email.", "bad");
+      return showMsg(siMsg, 'Enter a valid email (or type "admin").', "bad");
     }
 
     setPill("STATUS: AUTH");
-    logSide(`[AUTH] signIn email=${email}`);
+    logSide(`[AUTH] signIn requested email=${email}`);
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -683,20 +737,22 @@ if (email === "admin") {
 
     if (error) {
       setPill("STATUS: DENIED");
+      logSide(`[ERR] signIn failed: ${error.message}`);
       return showMsg(siMsg, error.message, "bad");
     }
 
     setPill("STATUS: AUTHORIZED");
     showMsg(siMsg, "Access granted. Redirecting...", "ok");
+    logSide("[OK] session established");
 
     window.location.href = "index.html";
   });
 
-  // default mode
+  // Default mode
   setMode("signin");
-
-  });
+});
 </script>
+
 
 
 </body>
