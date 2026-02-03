@@ -492,7 +492,11 @@
 
 
 
+
     <script>
+
+      window.addEventListener("DOMContentLoaded", () => {
+
   const SUPABASE_URL = "https://mleouhkgejhhkohabfkh.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_is4iznE0iIMtkLBJZGqzDQ_KFaf2mY2";
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -687,6 +691,8 @@
 
   // default mode
   setMode("signin");
+
+  });
 </script>
 
 
