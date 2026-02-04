@@ -80,11 +80,21 @@
     const btn = document.getElementById("btn-log");
     if (!btn) return;
 
-    // 1️⃣ Check session
-    const { data: { session } } = await supabase.auth.getSession();
+    if (!window.sb) {
+      console.error("Supabase client missing: window.sb");
+      btn.textContent = "OFFLINE";
+      return;
+    }
 
-    // NOT LOGGED IN
-    if (!session || !session.user) {
+    // Helper: pad code to 3 digits
+    const pad3 = (v) => String(v ?? "").padStart(3, "0").slice(-3);
+
+    // 1) Session check
+    const { data: { session }, error: sessErr } = await window.sb.auth.getSession();
+
+    if (sessErr) console.warn("getSession error:", sessErr);
+
+    if (!session?.user) {
       btn.textContent = "LOGIN";
       btn.onclick = () => window.location.href = "auth.html";
       return;
@@ -92,45 +102,58 @@
 
     const userId = session.user.id;
 
-    // 2️⃣ FETCH THE THREE PIECES YOU ACTUALLY WANT
-    const { data: profile, error } = await supabase
+    // 2) Fetch what you ACTUALLY want to display
+    const { data: profile, error } = await window.sb
       .from("profiles")
       .select("base_username, affiliation, code, role")
       .eq("id", userId)
       .single();
 
-    if (error || !profile) {
-      console.error("Profile fetch error:", error);
-      btn.textContent = "NETRUNNER";
+    if (error) {
+      console.error("profiles fetch error:", error);
+      btn.textContent = "CONNECTED";
+      btn.onclick = async () => {
+        const ok = confirm("Sever connection to ORION node?");
+        if (ok) {
+          await window.sb.auth.signOut();
+          location.reload();
+        }
+      };
       return;
     }
 
-    // 3️⃣ BUILD THE HANDLE MANUALLY
-    const displayHandle = `${profile.base_username}-${profile.affiliation}-${profile.code}`.toUpperCase();
-    btn.textContent = displayHandle;
+    // 3) Build display: base_username-AFF-### (uppercase vibe)
+    const base = (profile?.base_username || "USER").toString().trim();
+    const aff  = (profile?.affiliation  || "NCI").toString().trim().toUpperCase();
+    const code = pad3(profile?.code);
 
-    // 4️⃣ ADMIN GOLD MODE
-    if (profile.role === "admin") {
+    btn.textContent = `${base}-${aff}-${code}`.toUpperCase();
+
+    // Admin styling (optional)
+    if (profile?.role === "admin") {
       btn.style.color = "#ffd34d";
-      btn.style.textShadow = "0 0 10px rgba(255, 211, 77, 0.6)";
+      btn.style.textShadow = "0 0 10px rgba(255, 211, 77, 0.5)";
       btn.style.borderColor = "rgba(255, 211, 77, 0.4)";
     }
 
-    // 5️⃣ LOGOUT
+    // 4) Logout action
     btn.onclick = async () => {
-      const confirmLog = confirm("Sever connection to Orion Node?");
-      if (confirmLog) {
-        await supabase.auth.signOut();
+      const ok = confirm("Sever connection to ORION node?");
+      if (ok) {
+        await window.sb.auth.signOut();
         location.reload();
       }
     };
   });
 
-  // Sync logout across tabs
-  supabase.auth.onAuthStateChange((event) => {
-    if (event === "SIGNED_OUT") location.reload();
-  });
+  // Cross-tab logout safety
+  if (window.sb) {
+    window.sb.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_OUT") location.reload();
+    });
+  }
 </script>
+
 
 
 
