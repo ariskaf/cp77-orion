@@ -80,47 +80,44 @@
     const btn = document.getElementById("btn-log");
     if (!btn) return;
 
-    // 1️⃣ Check local session first
+    // 1️⃣ Check session
     const { data: { session } } = await supabase.auth.getSession();
 
-    // IF NOT LOGGED IN
+    // NOT LOGGED IN
     if (!session || !session.user) {
       btn.textContent = "LOGIN";
-      btn.onclick = () => {
-        window.location.href = "auth.html";
-      };
+      btn.onclick = () => window.location.href = "auth.html";
       return;
     }
 
     const userId = session.user.id;
 
-    // 2️⃣ Fetch the specific HANDLE from the database
-    // Your SQL now saves it exactly like "ADMIN-NCI-001" or "ARIS-PL-077"
+    // 2️⃣ FETCH THE THREE PIECES YOU ACTUALLY WANT
     const { data: profile, error } = await supabase
       .from("profiles")
-      .select("handle, role")
+      .select("base_username, affiliation, code, role")
       .eq("id", userId)
       .single();
 
-    // 3️⃣ Display logic
-    if (profile && profile.handle) {
-      // FORCE UPPERCASE just to be safe and match the aesthetic
-      btn.textContent = profile.handle.toUpperCase(); 
-    } else {
-      // Fallback if something is loading or missing
-      btn.textContent = "NETRUNNER"; 
+    if (error || !profile) {
+      console.error("Profile fetch error:", error);
+      btn.textContent = "NETRUNNER";
+      return;
     }
 
-    // 4️⃣ Admin Gold Mode
-    if (profile && profile.role === "admin") {
-      btn.style.color = "#ffd34d"; // Gold
-      btn.style.textShadow = "0 0 10px rgba(255, 211, 77, 0.5)";
+    // 3️⃣ BUILD THE HANDLE MANUALLY
+    const displayHandle = `${profile.base_username}-${profile.affiliation}-${profile.code}`.toUpperCase();
+    btn.textContent = displayHandle;
+
+    // 4️⃣ ADMIN GOLD MODE
+    if (profile.role === "admin") {
+      btn.style.color = "#ffd34d";
+      btn.style.textShadow = "0 0 10px rgba(255, 211, 77, 0.6)";
       btn.style.borderColor = "rgba(255, 211, 77, 0.4)";
     }
 
-    // 5️⃣ Logout Action
+    // 5️⃣ LOGOUT
     btn.onclick = async () => {
-      // Cyberpunk style confirm box
       const confirmLog = confirm("Sever connection to Orion Node?");
       if (confirmLog) {
         await supabase.auth.signOut();
@@ -129,11 +126,12 @@
     };
   });
 
-  // Listener: If they log out in another tab, reload this one
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_OUT') location.reload();
+  // Sync logout across tabs
+  supabase.auth.onAuthStateChange((event) => {
+    if (event === "SIGNED_OUT") location.reload();
   });
 </script>
+
 
 
 
